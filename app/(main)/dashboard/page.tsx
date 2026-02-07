@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Grid, GridItem, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import { Header } from "@/components/layout";
 import {
   StatCard,
@@ -17,61 +17,56 @@ import {
 
 export default function DashboardPage() {
   return (
-    <Box>
+    <Box minH="100vh">
       <Header title="Dashboard" />
       
-      <Box p={{ base: 4, md: 6 }}>
+      <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
         {/* Stats Grid */}
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap={4} mb={6}>
           <StatCard
             title="Total Saldo"
             value="Rp 26.450.000"
-            icon={<LuWallet />}
-            change="+12% dari bulan lalu"
+            icon={<LuWallet size={20} />}
+            change="12% dari bulan lalu"
             changeType="positive"
             colorScheme="teal"
           />
           <StatCard
-            title="Pemasukan Bulan Ini"
+            title="Pemasukan"
             value="Rp 10.500.000"
-            icon={<LuTrendingUp />}
-            change="+8% dari bulan lalu"
+            icon={<LuTrendingUp size={20} />}
+            change="8% dari bulan lalu"
             changeType="positive"
             colorScheme="green"
           />
           <StatCard
-            title="Pengeluaran Bulan Ini"
+            title="Pengeluaran"
             value="Rp 4.530.000"
-            icon={<LuTrendingDown />}
-            change="-5% dari bulan lalu"
-            changeType="positive"
+            icon={<LuTrendingDown size={20} />}
+            change="5% dari bulan lalu"
+            changeType="negative"
             colorScheme="red"
           />
           <StatCard
             title="Total Tabungan"
             value="Rp 26.450.000"
-            icon={<LuPiggyBank />}
+            icon={<LuPiggyBank size={20} />}
             change="3 target aktif"
             changeType="neutral"
             colorScheme="purple"
           />
         </SimpleGrid>
 
-        {/* Main Content Grid */}
-        <Grid
-          templateColumns={{ base: "1fr", lg: "1fr 1fr", xl: "2fr 1fr" }}
-          gap={6}
-        >
-          <GridItem>
-            <RecentTransactions />
-          </GridItem>
-          <GridItem>
-            <SavingsOverview />
-          </GridItem>
-          <GridItem colSpan={{ base: 1, lg: 2, xl: 1 }}>
-            <BudgetOverview />
-          </GridItem>
-        </Grid>
+        {/* Full Width Savings */}
+        <Box mb={6}>
+          <SavingsOverview />
+        </Box>
+
+        {/* Transactions and Budget Grid */}
+        <SimpleGrid columns={{ base: 1, lg: 2 }} gap={6}>
+          <RecentTransactions />
+          <BudgetOverview />
+        </SimpleGrid>
       </Box>
     </Box>
   );

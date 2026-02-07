@@ -1,15 +1,10 @@
 "use client";
 
-import { VStack, Text, HStack, Separator, Box, Link as ChakraLink } from "@chakra-ui/react";
+import { VStack, Text, HStack, Separator, Box } from "@chakra-ui/react";
 import { useState } from "react";
-import { LuMail, LuKeyRound, LuArrowLeft, LuCircleCheck } from "react-icons/lu";
+import { LuMail, LuPiggyBank, LuCircleCheck, LuArrowLeft } from "react-icons/lu";
 import Link from "next/link";
-import {
-  AuthCard,
-  AuthHeader,
-  FormInput,
-  SubmitButton,
-} from "@/components/auth";
+import { AuthCard, FormInput, SubmitButton, AuthLink } from "@/components/auth";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -19,88 +14,38 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    console.log("Forgot Password:", { email });
-    setIsLoading(false);
     setIsSubmitted(true);
+    setIsLoading(false);
   };
 
   if (isSubmitted) {
     return (
       <AuthCard>
         <VStack gap={6} py={4}>
-          <Box
-            p={4}
-            bg="green.50"
-            borderRadius="full"
-            color="green.500"
-            _dark={{
-              bg: "green.900",
-              color: "green.200",
-            }}
-          >
-            <LuCircleCheck size={40} />
+          <Box p={4} bg="teal.50" borderRadius="full" color="teal.600" _dark={{ bg: "teal.900", color: "teal.300" }}>
+            <LuCircleCheck size={48} />
           </Box>
-          
           <VStack gap={2} textAlign="center">
-            <Text
-              fontSize="xl"
-              fontWeight="bold"
-              color="gray.900"
-              _dark={{ color: "white" }}
-            >
+            <Text fontSize="xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
               Email Terkirim!
             </Text>
-            <Text
-              fontSize="sm"
-              color="gray.600"
-              _dark={{ color: "gray.400" }}
-              maxW="xs"
-            >
-              Kami telah mengirim instruksi untuk mereset password ke{" "}
-              <Text as="span" fontWeight="medium" color="teal.600" _dark={{ color: "teal.400" }}>
-                {email}
-              </Text>
+            <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }} lineHeight="tall">
+              Kami telah mengirim instruksi untuk mereset password ke <Text as="span" fontWeight="semibold" color="gray.700" _dark={{ color: "gray.300" }}>{email}</Text>
             </Text>
           </VStack>
 
           <VStack gap={3} w="full">
-            <Text
-              fontSize="xs"
-              color="gray.500"
-              textAlign="center"
-            >
-              Tidak menerima email? Periksa folder spam atau
+            <Text fontSize="xs" color="gray.400" _dark={{ color: "gray.500" }} textAlign="center">
+              Tidak menerima email? Periksa folder spam atau coba kirim ulang.
             </Text>
-            <SubmitButton
-              type="button"
-              onClick={() => {
-                setIsSubmitted(false);
-                setEmail("");
-              }}
-            >
-              Kirim Ulang
-            </SubmitButton>
-          </VStack>
-
-          <ChakraLink
-            asChild
-            color="teal.600"
-            fontSize="sm"
-            fontWeight="medium"
-            _hover={{ color: "teal.500" }}
-            _dark={{ color: "teal.400" }}
-          >
-            <Link href="/login">
-              <HStack gap={2}>
-                <LuArrowLeft size={16} />
-                <Text>Kembali ke halaman login</Text>
-              </HStack>
+            <Link href="/login" style={{ width: "100%" }}>
+              <Box as="button" w="full" display="flex" alignItems="center" justifyContent="center" gap={2} py={3} px={4} borderRadius="xl" bg="teal.500" color="white" fontWeight="semibold" _hover={{ bg: "teal.600" }} transition="all 0.2s">
+                <LuArrowLeft size={18} />
+                Kembali ke Login
+              </Box>
             </Link>
-          </ChakraLink>
+          </VStack>
         </VStack>
       </AuthCard>
     );
@@ -108,11 +53,18 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthCard>
-      <AuthHeader
-        icon={<LuKeyRound size={28} />}
-        title="Lupa Password?"
-        subtitle="Masukkan email Anda untuk mereset password"
-      />
+      {/* Header */}
+      <VStack gap={2} textAlign="center">
+        <Box display={{ base: "flex", lg: "none" }} p={3} bg="teal.50" borderRadius="xl" color="teal.600" mb={2} _dark={{ bg: "teal.900", color: "teal.300" }}>
+          <LuPiggyBank size={32} />
+        </Box>
+        <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+          Lupa Password?
+        </Text>
+        <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }} lineHeight="tall">
+          Masukkan email Anda dan kami akan mengirimkan instruksi untuk mereset password
+        </Text>
+      </VStack>
 
       <form onSubmit={handleSubmit}>
         <VStack gap={5}>
@@ -135,27 +87,11 @@ export default function ForgotPasswordPage() {
       <VStack gap={4}>
         <HStack w="full" gap={4}>
           <Separator flex={1} />
-          <Text fontSize="xs" color="gray.500" flexShrink={0}>
-            atau
-          </Text>
+          <Text fontSize="xs" color="gray.400" flexShrink={0}>atau</Text>
           <Separator flex={1} />
         </HStack>
 
-        <ChakraLink
-          asChild
-          color="teal.600"
-          fontSize="sm"
-          fontWeight="medium"
-          _hover={{ color: "teal.500" }}
-          _dark={{ color: "teal.400" }}
-        >
-          <Link href="/login">
-            <HStack gap={2}>
-              <LuArrowLeft size={16} />
-              <Text>Kembali ke halaman login</Text>
-            </HStack>
-          </Link>
-        </ChakraLink>
+        <AuthLink text="Ingat password Anda?" linkText="Masuk" href="/login" />
       </VStack>
     </AuthCard>
   );

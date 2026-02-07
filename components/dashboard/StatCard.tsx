@@ -20,67 +20,78 @@ export function StatCard({
   changeType = "neutral",
   colorScheme = "teal",
 }: StatCardProps) {
-  const changeColors = {
-    positive: "green.500",
-    negative: "red.500",
-    neutral: "gray.500",
+  const changeConfig = {
+    positive: { color: "green.500", darkColor: "green.400", prefix: "↑" },
+    negative: { color: "red.500", darkColor: "red.400", prefix: "↓" },
+    neutral: { color: "gray.500", darkColor: "gray.400", prefix: "" },
   };
+
+  const config = changeConfig[changeType];
 
   return (
     <Box
       bg="white"
-      borderRadius="2xl"
-      p={6}
-      boxShadow="sm"
+      borderRadius="xl"
+      p={5}
       border="1px solid"
-      borderColor="gray.100"
+      borderColor="gray.200"
       transition="all 0.2s ease"
       _hover={{
-        boxShadow: "md",
-        transform: "translateY(-2px)",
+        borderColor: "gray.300",
+        shadow: "sm",
       }}
       _dark={{
         bg: "gray.800",
         borderColor: "gray.700",
+        _hover: { borderColor: "gray.600" },
       }}
     >
-      <HStack justify="space-between" align="flex-start">
-        <VStack align="flex-start" gap={1}>
+      <Flex justify="space-between" align="flex-start" gap={4}>
+        <VStack align="flex-start" gap={1} flex={1} minW={0}>
           <Text
-            fontSize="sm"
+            fontSize="xs"
             fontWeight="medium"
             color="gray.500"
+            textTransform="uppercase"
+            letterSpacing="wide"
             _dark={{ color: "gray.400" }}
           >
             {title}
           </Text>
           <Text
-            fontSize="2xl"
+            fontSize="xl"
             fontWeight="bold"
-            color="gray.800"
+            color="gray.900"
+            lineHeight="tight"
             _dark={{ color: "white" }}
           >
             {value}
           </Text>
           {change && (
-            <Text fontSize="xs" color={changeColors[changeType]}>
-              {change}
+            <Text
+              fontSize="xs"
+              color={config.color}
+              fontWeight="medium"
+              _dark={{ color: config.darkColor }}
+            >
+              {config.prefix} {change}
             </Text>
           )}
         </VStack>
         <Box
-          p={3}
-          borderRadius="xl"
+          p={2.5}
+          borderRadius="lg"
           bg={`${colorScheme}.50`}
-          color={`${colorScheme}.500`}
+          color={`${colorScheme}.600`}
+          flexShrink={0}
           _dark={{
-            bg: `${colorScheme}.900`,
-            color: `${colorScheme}.200`,
+            bg: `${colorScheme}.900/50`,
+            color: `${colorScheme}.300`,
           }}
         >
           {icon}
         </Box>
-      </HStack>
+      </Flex>
     </Box>
   );
 }

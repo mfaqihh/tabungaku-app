@@ -20,7 +20,6 @@ import {
   LuChevronLeft,
   LuChevronRight,
   LuX,
-  LuLogOut,
 } from "react-icons/lu";
 import { useSidebar } from "@/contexts";
 
@@ -35,7 +34,6 @@ const navItems: NavItem[] = [
   { label: "Tabungan", href: "/tabungan", icon: LuPiggyBank },
   { label: "Budget", href: "/budget", icon: LuWallet },
   { label: "Transaksi", href: "/transaksi", icon: LuArrowLeftRight },
-  // { label: "Profile", href: "/profile", icon: LuUser },
 ];
 
 export function Sidebar() {
