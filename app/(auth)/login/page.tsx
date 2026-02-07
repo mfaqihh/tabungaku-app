@@ -61,8 +61,6 @@ export default function LoginPage() {
               leftIcon={<LuLock size={18} />}
               rightElement={
                 <Box
-                  as="button"
-                  type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   color="gray.400"
                   _hover={{ color: "gray.600" }}

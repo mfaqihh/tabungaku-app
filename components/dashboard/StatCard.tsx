@@ -1,12 +1,12 @@
 "use client";
 
-import { Box, Icon, Text, VStack, HStack } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 interface StatCardProps {
   title: string;
   value: string;
-  icon: React.ElementType;
+  icon: ReactNode;
   change?: string;
   changeType?: "positive" | "negative" | "neutral";
   colorScheme?: string;
@@ -78,11 +78,10 @@ export function StatCard({
             color: `${colorScheme}.200`,
           }}
         >
-          <Icon boxSize={6}>
-            <icon.type {...icon.props} />
-          </Icon>
+          {icon}
         </Box>
       </HStack>
     </Box>
   );
 }
+

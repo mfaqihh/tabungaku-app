@@ -17,7 +17,6 @@ import {
   LuWallet,
   LuPencil,
   LuTrash2,
-  LuMoreVertical,
 } from "react-icons/lu";
 
 interface Budget {
