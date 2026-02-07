@@ -2,6 +2,7 @@
 
 import { VStack, Text, Link as ChakraLink, HStack, Separator, Box } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuMail, LuLock, LuLogIn, LuEye, LuEyeOff } from "react-icons/lu";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@/components/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,10 +25,10 @@ export default function LoginPage() {
     setIsLoading(true);
     
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    console.log("Login:", { email, password });
-    setIsLoading(false);
+    // For development: redirect to dashboard
+    router.push("/dashboard");
   };
 
   return (
