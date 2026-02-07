@@ -18,6 +18,16 @@ import {
   LuWallet,
   LuPencil,
   LuTrash2,
+  LuShoppingCart,
+  LuCar,
+  LuGamepad2,
+  LuFileText,
+  LuUtensils,
+  LuHeart,
+  LuBookOpen,
+  LuPackage,
+  LuTrendingDown,
+  LuTrendingUp,
 } from "react-icons/lu";
 import { ReactNode } from "react";
 

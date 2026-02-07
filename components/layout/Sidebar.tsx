@@ -16,7 +16,6 @@ import {
   LuPiggyBank,
   LuWallet,
   LuArrowLeftRight,
-  LuUser,
   LuChevronLeft,
   LuChevronRight,
   LuX,
@@ -230,44 +229,6 @@ export function Sidebar() {
               </Text>
             )}
           </Flex>
-        </Box>
-
-        {/* Logout */}
-        <Box
-          p={3}
-          borderTop="1px solid"
-          borderColor="gray.200"
-          _dark={{ borderColor: "gray.700" }}
-        >
-          <Link href="/login">
-            <Flex
-              align="center"
-              gap={3}
-              px={isCollapsed ? 0 : 4}
-              py={3}
-              borderRadius="xl"
-              justify={isCollapsed ? "center" : "flex-start"}
-              color="red.500"
-              transition="all 0.2s ease"
-              _hover={{
-                bg: "red.50",
-              }}
-              _dark={{
-                _hover: {
-                  bg: "red.900",
-                },
-              }}
-            >
-              <Icon boxSize={5}>
-                <LuLogOut />
-              </Icon>
-              {!isCollapsed && (
-                <Text fontSize="sm" fontWeight="medium">
-                  Keluar
-                </Text>
-              )}
-            </Flex>
-          </Link>
         </Box>
       </Box>
     </>

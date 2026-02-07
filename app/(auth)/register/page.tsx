@@ -87,7 +87,7 @@ export default function RegisterPage() {
                 cursor="pointer"
               >
                 {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
-              </button>
+              </Box>
             }
             error={errors.password}
             required
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                 cursor="pointer"
               >
                 {showConfirmPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
-              </button>
+              </Box>
             }
             error={errors.confirmPassword}
             required

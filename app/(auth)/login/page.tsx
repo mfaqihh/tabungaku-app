@@ -1,6 +1,6 @@
 "use client";
 
-import { VStack, Text, Link as ChakraLink, HStack, Separator, Box, Button } from "@chakra-ui/react";
+import { VStack, Text, Link as ChakraLink, HStack, Separator, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -64,7 +64,7 @@ export default function LoginPage() {
                   cursor="pointer"
                 >
                   {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
-                </button>
+                </Box>
               }
               required
             />
