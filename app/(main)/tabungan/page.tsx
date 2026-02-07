@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Box,
   SimpleGrid,
@@ -15,6 +16,10 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Header } from "@/components/layout";
+import { AddSavingsModal, SavingsCard } from "@/components/tabungan";
+import { useSavingsStore } from "@/stores/savingsStore";
+import { formatCurrency } from "@/lib/utils/currency";
+import { formatDateShort } from "@/lib/utils/formatDate";
 import {
   LuPlus,
   LuPiggyBank,
@@ -25,99 +30,51 @@ import {
   LuEye,
   LuSearch,
   LuArrowUpRight,
-  LuShield,
-  LuCoins,
-  LuPlane,
-  LuSmartphone,
-  LuChartLine,
+  LuLayoutGrid,
+  LuList,
 } from "react-icons/lu";
-import { ReactNode } from "react";
 
-interface SavingsAccount {
-  id: string;
-  name: string;
-  balance: number;
-  target: number;
-  type: "regular" | "goal";
-  icon: ReactNode;
-  lastUpdate: string;
-}
-
-const savingsAccounts: SavingsAccount[] = [
-  {
-    id: "1",
-    name: "Dana Darurat",
-    balance: 18500000,
-    target: 30000000,
-    type: "goal",
-    icon: <LuShield size={18} />,
-    lastUpdate: "2024-02-07",
-  },
-  {
-    id: "2",
-    name: "Tabungan Utama",
-    balance: 5200000,
-    target: 0,
-    type: "regular",
-    icon: <LuCoins size={18} />,
-    lastUpdate: "2024-02-06",
-  },
-  {
-    id: "3",
-    name: "Liburan Bali",
-    balance: 4200000,
-    target: 10000000,
-    type: "goal",
-    icon: <LuPlane size={18} />,
-    lastUpdate: "2024-02-05",
-  },
-  {
-    id: "4",
-    name: "Gadget Baru",
-    balance: 3750000,
-    target: 5000000,
-    type: "goal",
-    icon: <LuSmartphone size={18} />,
-    lastUpdate: "2024-02-04",
-  },
-  {
-    id: "5",
-    name: "Investasi",
-    balance: 8500000,
-    target: 0,
-    type: "regular",
-    icon: <LuChartLine size={18} />,
-    lastUpdate: "2024-02-03",
-  },
-];
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
+// View mode: table atau card
+type ViewMode = "table" | "card";
 
 export default function TabunganPage() {
-  const totalBalance = savingsAccounts.reduce((acc, account) => acc + account.balance, 0);
-  const goalAccounts = savingsAccounts.filter((a) => a.type === "goal");
-  const regularAccounts = savingsAccounts.filter((a) => a.type === "regular");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  // Get data dari Zustand store
+  const savingsGoals = useSavingsStore((state) => state.savingsGoals);
+  const deleteSavings = useSavingsStore((state) => state.deleteSavings);
+  
+  // Handle hydration untuk localStorage
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  
+  // Filter berdasarkan search query
+  const filteredSavings = savingsGoals.filter((s) =>
+    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
+  // Statistik
+  const totalBalance = savingsGoals.reduce((acc, s) => acc + s.currentAmount, 0);
+  const berjangkaCount = savingsGoals.filter((s) => s.type === "berjangka").length;
+  const regulerCount = savingsGoals.filter((s) => s.type === "reguler").length;
+  
+  // Handle delete
+  const handleDelete = (id: string) => {
+    if (confirm("Yakin ingin menghapus tabungan ini?")) {
+      deleteSavings(id);
+    }
+  };
+  
   return (
     <Box minH="100vh">
       <Header title="Tabungan" />
 
       <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
+        {/* Summary Cards */}
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
           <Box bg="teal.600" borderRadius="xl" p={5} color="white">
             <Flex justify="space-between" align="flex-start" mb={3}>
@@ -129,11 +86,11 @@ export default function TabunganPage() {
               </Box>
             </Flex>
             <Text fontSize="2xl" fontWeight="bold" mb={1}>
-              {formatCurrency(totalBalance)}
+              {isHydrated ? formatCurrency(totalBalance) : "Rp 0"}
             </Text>
             <HStack gap={1} fontSize="xs" opacity={0.85}>
               <LuArrowUpRight size={14} />
-              <Text>{savingsAccounts.length} akun tabungan</Text>
+              <Text>{isHydrated ? savingsGoals.length : 0} akun tabungan</Text>
             </HStack>
           </Box>
 
@@ -146,7 +103,9 @@ export default function TabunganPage() {
                 <LuTarget size={18} />
               </Box>
             </Flex>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>{goalAccounts.length}</Text>
+            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+              {isHydrated ? berjangkaCount : 0}
+            </Text>
             <Text fontSize="xs" color="gray.500" mt={1}>Target aktif</Text>
           </Box>
 
@@ -159,80 +118,168 @@ export default function TabunganPage() {
                 <LuTrendingUp size={18} />
               </Box>
             </Flex>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>{regularAccounts.length}</Text>
+            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+              {isHydrated ? regulerCount : 0}
+            </Text>
             <Text fontSize="xs" color="gray.500" mt={1}>Akun tabungan</Text>
           </Box>
         </SimpleGrid>
 
+        {/* Toolbar */}
         <Flex justify="space-between" align="center" mb={4} gap={4} flexWrap="wrap">
-          <Box position="relative" w={{ base: "full", sm: "280px" }}>
-            <Box position="absolute" left={3} top="50%" transform="translateY(-50%)" color="gray.400" pointerEvents="none">
-              <LuSearch size={16} />
+          <HStack gap={3}>
+            <Box position="relative" w={{ base: "full", sm: "280px" }}>
+              <Box position="absolute" left={3} top="50%" transform="translateY(-50%)" color="gray.400" pointerEvents="none">
+                <LuSearch size={16} />
+              </Box>
+              <Input 
+                placeholder="Cari tabungan..." 
+                pl={9} 
+                size="sm" 
+                bg="white" 
+                borderRadius="lg" 
+                borderColor="gray.200" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                _dark={{ bg: "gray.800", borderColor: "gray.700" }} 
+              />
             </Box>
-            <Input placeholder="Cari tabungan..." pl={9} size="sm" bg="white" borderRadius="lg" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }} />
-          </Box>
-          <Button colorPalette="teal" size="sm" borderRadius="lg">
+            
+            {/* View mode toggle */}
+            <HStack gap={1} bg="gray.100" p={1} borderRadius="lg" _dark={{ bg: "gray.700" }}>
+              <IconButton
+                aria-label="Card view"
+                size="sm"
+                variant={viewMode === "card" ? "solid" : "ghost"}
+                colorPalette={viewMode === "card" ? "teal" : "gray"}
+                onClick={() => setViewMode("card")}
+                borderRadius="md"
+              >
+                <LuLayoutGrid size={16} />
+              </IconButton>
+              <IconButton
+                aria-label="Table view"
+                size="sm"
+                variant={viewMode === "table" ? "solid" : "ghost"}
+                colorPalette={viewMode === "table" ? "teal" : "gray"}
+                onClick={() => setViewMode("table")}
+                borderRadius="md"
+              >
+                <LuList size={16} />
+              </IconButton>
+            </HStack>
+          </HStack>
+          
+          <Button colorPalette="teal" size="sm" borderRadius="lg" onClick={() => setIsModalOpen(true)}>
             <LuPlus size={16} />
             Tambah Tabungan
           </Button>
         </Flex>
 
-        <Box bg="white" borderRadius="xl" border="1px solid" borderColor="gray.200" overflow="hidden" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
-          <Table.Root size="md">
-            <Table.Header>
-              <Table.Row bg="gray.50" _dark={{ bg: "gray.800" }}>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Nama Tabungan</Table.ColumnHeader>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Tipe</Table.ColumnHeader>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Saldo</Table.ColumnHeader>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Progress</Table.ColumnHeader>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Update Terakhir</Table.ColumnHeader>
-                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" textAlign="right" _dark={{ color: "gray.400" }}>Aksi</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {savingsAccounts.map((account, index) => {
-                const progress = account.target > 0 ? Math.round((account.balance / account.target) * 100) : null;
-                return (
-                  <Table.Row key={account.id} borderBottom={index < savingsAccounts.length - 1 ? "1px solid" : "none"} borderColor="gray.100" _hover={{ bg: "gray.50" }} _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700" } }}>
-                    <Table.Cell py={4} px={5}>
-                      <HStack gap={3}>
-                        <Box p={2} bg="teal.50" color="teal.600" borderRadius="lg" _dark={{ bg: "teal.900", color: "teal.300" }}>{account.icon}</Box>
-                        <Text fontWeight="medium" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{account.name}</Text>
-                      </HStack>
-                    </Table.Cell>
-                    <Table.Cell py={4} px={5}>
-                      <Badge colorPalette={account.type === "goal" ? "purple" : "blue"} variant="subtle" size="sm" borderRadius="md">{account.type === "goal" ? "Berjangka" : "Reguler"}</Badge>
-                    </Table.Cell>
-                    <Table.Cell py={4} px={5}>
-                      <Text fontWeight="semibold" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{formatCurrency(account.balance)}</Text>
-                    </Table.Cell>
-                    <Table.Cell py={4} px={5}>
-                      {progress !== null ? (
-                        <VStack align="stretch" gap={1} maxW="140px">
-                          <Progress.Root value={progress} size="xs" colorPalette="teal">
-                            <Progress.Track bg="gray.100" borderRadius="full" _dark={{ bg: "gray.700" }}>
-                              <Progress.Range borderRadius="full" />
-                            </Progress.Track>
-                          </Progress.Root>
-                          <Text fontSize="xs" color="gray.500">{progress}% dari {formatCurrency(account.target)}</Text>
-                        </VStack>
-                      ) : <Text fontSize="xs" color="gray.400">—</Text>}
-                    </Table.Cell>
-                    <Table.Cell py={4} px={5}><Text fontSize="sm" color="gray.500">{formatDate(account.lastUpdate)}</Text></Table.Cell>
-                    <Table.Cell py={4} px={5}>
-                      <HStack justify="flex-end" gap={0.5}>
-                        <IconButton aria-label="View" variant="ghost" size="sm" color="gray.500" _hover={{ color: "gray.700", bg: "gray.100" }} _dark={{ _hover: { color: "white", bg: "gray.700" } }}><LuEye size={16} /></IconButton>
-                        <IconButton aria-label="Edit" variant="ghost" size="sm" color="gray.500" _hover={{ color: "blue.600", bg: "blue.50" }} _dark={{ _hover: { color: "blue.400", bg: "blue.900" } }}><LuPencil size={16} /></IconButton>
-                        <IconButton aria-label="Delete" variant="ghost" size="sm" color="gray.500" _hover={{ color: "red.600", bg: "red.50" }} _dark={{ _hover: { color: "red.400", bg: "red.900" } }}><LuTrash2 size={16} /></IconButton>
-                      </HStack>
-                    </Table.Cell>
+        {/* Content */}
+        {!isHydrated ? (
+          <Box textAlign="center" py={10}>
+            <Text color="gray.500">Memuat data...</Text>
+          </Box>
+        ) : filteredSavings.length === 0 ? (
+          <Box 
+            textAlign="center" 
+            py={16} 
+            bg="white" 
+            borderRadius="xl" 
+            border="1px solid" 
+            borderColor="gray.200"
+            _dark={{ bg: "gray.800", borderColor: "gray.700" }}
+          >
+            <Box fontSize="4xl" mb={4}>💰</Box>
+            <Text fontSize="lg" fontWeight="medium" color="gray.700" mb={2} _dark={{ color: "gray.300" }}>
+              {searchQuery ? "Tidak ada tabungan ditemukan" : "Belum ada tabungan"}
+            </Text>
+            <Text fontSize="sm" color="gray.500" mb={6}>
+              {searchQuery ? "Coba kata kunci lain" : "Mulai buat target tabunganmu sekarang!"}
+            </Text>
+            {!searchQuery && (
+              <Button colorPalette="teal" onClick={() => setIsModalOpen(true)}>
+                <LuPlus size={16} />
+                Buat Tabungan Pertama
+              </Button>
+            )}
+          </Box>
+        ) : viewMode === "card" ? (
+          /* Card View */
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
+            {filteredSavings.map((savings) => (
+              <SavingsCard
+                key={savings.id}
+                savings={savings}
+                onDelete={handleDelete}
+              />
+            ))}
+          </SimpleGrid>
+        ) : (
+          /* Table View */
+          <Box bg="white" borderRadius="xl" border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
+            <Box overflowX="auto" css={{ WebkitOverflowScrolling: "touch" }}>
+              <Table.Root size="md" style={{ minWidth: "800px" }}>
+                <Table.Header>
+                  <Table.Row bg="gray.50" _dark={{ bg: "gray.800" }}>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Nama Tabungan</Table.ColumnHeader>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Tipe</Table.ColumnHeader>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Saldo</Table.ColumnHeader>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Progress</Table.ColumnHeader>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Update Terakhir</Table.ColumnHeader>
+                    <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" textAlign="right" _dark={{ color: "gray.400" }}>Aksi</Table.ColumnHeader>
                   </Table.Row>
-                );
-              })}
-            </Table.Body>
-          </Table.Root>
-        </Box>
+                </Table.Header>
+                <Table.Body>
+                  {filteredSavings.map((savings, index) => {
+                    const progress = Math.round((savings.currentAmount / savings.targetAmount) * 100);
+                    return (
+                      <Table.Row key={savings.id} borderBottom={index < filteredSavings.length - 1 ? "1px solid" : "none"} borderColor="gray.100" _hover={{ bg: "gray.50" }} _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700" } }}>
+                        <Table.Cell py={4} px={5}>
+                          <HStack gap={3}>
+                            <Box p={2} bg={`${savings.color}20`} borderRadius="lg" fontSize="lg">{savings.icon}</Box>
+                            <Text fontWeight="medium" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{savings.name}</Text>
+                          </HStack>
+                        </Table.Cell>
+                        <Table.Cell py={4} px={5}>
+                          <Badge colorPalette={savings.type === "berjangka" ? "purple" : "blue"} variant="subtle" size="sm" borderRadius="md">{savings.type === "berjangka" ? "Berjangka" : "Reguler"}</Badge>
+                        </Table.Cell>
+                        <Table.Cell py={4} px={5}>
+                          <Text fontWeight="semibold" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{formatCurrency(savings.currentAmount)}</Text>
+                        </Table.Cell>
+                        <Table.Cell py={4} px={5}>
+                          <VStack align="stretch" gap={1} maxW="140px">
+                            <Progress.Root value={progress} size="xs" colorPalette="teal">
+                              <Progress.Track bg="gray.100" borderRadius="full" _dark={{ bg: "gray.700" }}>
+                                <Progress.Range borderRadius="full" bg={savings.color} />
+                              </Progress.Track>
+                            </Progress.Root>
+                            <Text fontSize="xs" color="gray.500">{progress}% dari {formatCurrency(savings.targetAmount)}</Text>
+                          </VStack>
+                        </Table.Cell>
+                        <Table.Cell py={4} px={5}>
+                          <Text fontSize="sm" color="gray.500">{formatDateShort(savings.updatedAt)}</Text>
+                        </Table.Cell>
+                        <Table.Cell py={4} px={5}>
+                          <HStack justify="flex-end" gap={0.5}>
+                            <IconButton aria-label="View" variant="ghost" size="sm" color="gray.500" _hover={{ color: "gray.700", bg: "gray.100" }} _dark={{ _hover: { color: "white", bg: "gray.700" } }}><LuEye size={16} /></IconButton>
+                            <IconButton aria-label="Edit" variant="ghost" size="sm" color="gray.500" _hover={{ color: "blue.600", bg: "blue.50" }} _dark={{ _hover: { color: "blue.400", bg: "blue.900" } }}><LuPencil size={16} /></IconButton>
+                            <IconButton aria-label="Delete" variant="ghost" size="sm" color="gray.500" onClick={() => handleDelete(savings.id)} _hover={{ color: "red.600", bg: "red.50" }} _dark={{ _hover: { color: "red.400", bg: "red.900" } }}><LuTrash2 size={16} /></IconButton>
+                          </HStack>
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table.Root>
+            </Box>
+          </Box>
+        )}
       </Box>
+      
+      {/* Modal */}
+      <AddSavingsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </Box>
   );
 }
