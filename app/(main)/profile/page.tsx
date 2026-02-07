@@ -8,8 +8,8 @@ import {
   Text,
   Button,
   Avatar,
-  Input,
   Separator,
+  Flex,
 } from "@chakra-ui/react";
 import { Header } from "@/components/layout";
 import {
@@ -23,6 +23,8 @@ import {
   LuPalette,
   LuLogOut,
   LuChevronRight,
+  LuCalendar,
+  LuCreditCard,
 } from "react-icons/lu";
 
 interface ProfileField {
@@ -68,51 +70,57 @@ const settingsItems: SettingItem[] = [
 
 export default function ProfilePage() {
   return (
-    <Box>
+    <Box minH="100vh">
       <Header title="Profile" />
 
-      <Box p={{ base: 4, md: 6 }}>
+      <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
         <SimpleGrid columns={{ base: 1, lg: 2 }} gap={6}>
           {/* Profile Card */}
           <Box
             bg="white"
-            borderRadius="2xl"
-            p={6}
-            boxShadow="sm"
+            borderRadius="xl"
             border="1px solid"
-            borderColor="gray.100"
+            borderColor="gray.200"
+            overflow="hidden"
             _dark={{ bg: "gray.800", borderColor: "gray.700" }}
           >
             {/* Profile Header */}
-            <VStack gap={4} mb={6}>
-              <Box position="relative">
-                <Avatar.Root size="2xl">
-                  <Avatar.Fallback 
-                    name="John Doe" 
-                    bg="teal.500" 
-                    color="white"
-                    fontSize="2xl"
-                  />
-                </Avatar.Root>
-                <Box
-                  position="absolute"
-                  bottom={0}
-                  right={0}
-                  bg="teal.500"
+            <Box
+              bg="teal.600"
+              px={6}
+              pt={8}
+              pb={12}
+              position="relative"
+            >
+              <Flex justify="flex-end">
+                <Button
+                  size="xs"
+                  variant="ghost"
                   color="white"
-                  p={2}
-                  borderRadius="full"
-                  cursor="pointer"
-                  _hover={{ bg: "teal.600" }}
+                  _hover={{ bg: "whiteAlpha.200" }}
                 >
                   <LuPencil size={14} />
-                </Box>
-              </Box>
-              <VStack gap={0}>
-                <Text
-                  fontSize="xl"
+                  Edit
+                </Button>
+              </Flex>
+            </Box>
+            
+            <VStack gap={4} px={6} pb={6} mt={-10}>
+              <Avatar.Root size="2xl" borderWidth={4} borderColor="white" _dark={{ borderColor: "gray.800" }}>
+                <Avatar.Fallback 
+                  name="John Doe" 
+                  bg="teal.500" 
+                  color="white"
+                  fontSize="2xl"
                   fontWeight="bold"
-                  color="gray.800"
+                />
+              </Avatar.Root>
+              
+              <VStack gap={0.5}>
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="gray.900"
                   _dark={{ color: "white" }}
                 >
                   John Doe
@@ -121,10 +129,11 @@ export default function ProfilePage() {
                   @johndoe
                 </Text>
               </VStack>
-              <HStack gap={6}>
+
+              <HStack gap={8} py={2}>
                 <VStack gap={0}>
-                  <Text fontWeight="bold" color="gray.800" _dark={{ color: "white" }}>
-                    12
+                  <Text fontWeight="bold" fontSize="lg" color="gray.900" _dark={{ color: "white" }}>
+                    5
                   </Text>
                   <Text fontSize="xs" color="gray.500">
                     Tabungan
@@ -132,7 +141,7 @@ export default function ProfilePage() {
                 </VStack>
                 <Separator orientation="vertical" h={10} />
                 <VStack gap={0}>
-                  <Text fontWeight="bold" color="gray.800" _dark={{ color: "white" }}>
+                  <Text fontWeight="bold" fontSize="lg" color="gray.900" _dark={{ color: "white" }}>
                     8
                   </Text>
                   <Text fontSize="xs" color="gray.500">
@@ -141,7 +150,7 @@ export default function ProfilePage() {
                 </VStack>
                 <Separator orientation="vertical" h={10} />
                 <VStack gap={0}>
-                  <Text fontWeight="bold" color="gray.800" _dark={{ color: "white" }}>
+                  <Text fontWeight="bold" fontSize="lg" color="gray.900" _dark={{ color: "white" }}>
                     156
                   </Text>
                   <Text fontSize="xs" color="gray.500">
@@ -151,98 +160,103 @@ export default function ProfilePage() {
               </HStack>
             </VStack>
 
-            <Separator mb={6} />
+            <Separator />
 
             {/* Profile Info */}
-            <VStack gap={4} align="stretch">
-              <HStack justify="space-between">
-                <Text fontWeight="semibold" color="gray.800" _dark={{ color: "white" }}>
+            <VStack gap={0} align="stretch" p={5}>
+              <Flex justify="space-between" align="center" mb={4}>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.900" _dark={{ color: "white" }}>
                   Informasi Pribadi
                 </Text>
-                <Button variant="ghost" size="sm" colorPalette="teal">
-                  <LuPencil size={14} />
+                <Button variant="ghost" size="xs" colorPalette="teal">
+                  <LuPencil size={12} />
                   Edit
                 </Button>
-              </HStack>
+              </Flex>
 
-              {profileData.map((field, index) => (
-                <HStack
-                  key={index}
-                  p={4}
-                  bg="gray.50"
-                  borderRadius="xl"
-                  _dark={{ bg: "gray.700" }}
-                >
-                  <Box
-                    p={2}
-                    bg="teal.50"
-                    color="teal.500"
+              <VStack gap={2} align="stretch">
+                {profileData.map((field, index) => (
+                  <Flex
+                    key={index}
+                    align="center"
+                    gap={3}
+                    p={3}
+                    bg="gray.50"
                     borderRadius="lg"
-                    _dark={{ bg: "teal.900", color: "teal.200" }}
+                    _dark={{ bg: "gray.700" }}
                   >
-                    <field.icon size={18} />
-                  </Box>
-                  <VStack align="flex-start" gap={0} flex={1}>
-                    <Text fontSize="xs" color="gray.500">
-                      {field.label}
-                    </Text>
-                    <Text fontSize="sm" fontWeight="medium" color="gray.800" _dark={{ color: "white" }}>
-                      {field.value}
-                    </Text>
-                  </VStack>
-                </HStack>
-              ))}
+                    <Box
+                      p={2}
+                      bg="teal.50"
+                      color="teal.600"
+                      borderRadius="lg"
+                      _dark={{ bg: "teal.900/50", color: "teal.300" }}
+                    >
+                      <field.icon size={16} />
+                    </Box>
+                    <VStack align="flex-start" gap={0} flex={1}>
+                      <Text fontSize="xs" color="gray.500">
+                        {field.label}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
+                        {field.value}
+                      </Text>
+                    </VStack>
+                  </Flex>
+                ))}
+              </VStack>
             </VStack>
           </Box>
 
-          {/* Settings Card */}
+          {/* Right Column */}
           <VStack gap={6} align="stretch">
+            {/* Settings Card */}
             <Box
               bg="white"
-              borderRadius="2xl"
-              p={6}
-              boxShadow="sm"
+              borderRadius="xl"
               border="1px solid"
-              borderColor="gray.100"
+              borderColor="gray.200"
+              overflow="hidden"
               _dark={{ bg: "gray.800", borderColor: "gray.700" }}
             >
-              <Text
-                fontWeight="semibold"
-                color="gray.800"
-                _dark={{ color: "white" }}
-                mb={4}
-              >
-                Pengaturan
-              </Text>
+              <Box px={5} py={4} borderBottom="1px solid" borderColor="gray.100" _dark={{ borderColor: "gray.700" }}>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.900" _dark={{ color: "white" }}>
+                  Pengaturan
+                </Text>
+              </Box>
 
-              <VStack gap={2} align="stretch">
+              <VStack gap={0} align="stretch">
                 {settingsItems.map((item, index) => (
-                  <HStack
+                  <Flex
                     key={index}
-                    p={4}
-                    borderRadius="xl"
+                    align="center"
+                    gap={3}
+                    px={5}
+                    py={3.5}
                     cursor="pointer"
-                    transition="all 0.2s ease"
+                    transition="background 0.15s ease"
+                    borderBottom={index < settingsItems.length - 1 ? "1px solid" : "none"}
+                    borderColor="gray.100"
                     _hover={{ bg: "gray.50" }}
-                    _dark={{ _hover: { bg: "gray.700" } }}
+                    _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700/50" } }}
                   >
                     <Box
                       p={2}
                       bg={`${item.color}.50`}
-                      color={`${item.color}.500`}
+                      color={`${item.color}.600`}
                       borderRadius="lg"
                       _dark={{
-                        bg: `${item.color}.900`,
-                        color: `${item.color}.200`,
+                        bg: `${item.color}.900/50`,
+                        color: `${item.color}.300`,
                       }}
                     >
-                      <item.icon size={20} />
+                      <item.icon size={18} />
                     </Box>
                     <VStack align="flex-start" gap={0} flex={1}>
                       <Text
                         fontSize="sm"
                         fontWeight="medium"
-                        color="gray.800"
+                        color="gray.900"
                         _dark={{ color: "white" }}
                       >
                         {item.label}
@@ -251,45 +265,54 @@ export default function ProfilePage() {
                         {item.description}
                       </Text>
                     </VStack>
-                    <LuChevronRight size={18} color="gray" />
-                  </HStack>
+                    <Box color="gray.400">
+                      <LuChevronRight size={16} />
+                    </Box>
+                  </Flex>
                 ))}
               </VStack>
             </Box>
 
-            {/* Member Since */}
+            {/* Membership Card */}
             <Box
               bg="white"
-              borderRadius="2xl"
-              p={6}
-              boxShadow="sm"
+              borderRadius="xl"
               border="1px solid"
-              borderColor="gray.100"
+              borderColor="gray.200"
+              overflow="hidden"
               _dark={{ bg: "gray.800", borderColor: "gray.700" }}
             >
-              <Text
-                fontWeight="semibold"
-                color="gray.800"
-                _dark={{ color: "white" }}
-                mb={4}
-              >
-                Keanggotaan
-              </Text>
-              <Box
-                p={4}
-                bg="linear-gradient(135deg, #319795 0%, #2C7A7B 100%)"
-                borderRadius="xl"
-                color="white"
-              >
-                <Text fontSize="sm" opacity={0.9}>
-                  Member sejak
+              <Box px={5} py={4} borderBottom="1px solid" borderColor="gray.100" _dark={{ borderColor: "gray.700" }}>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.900" _dark={{ color: "white" }}>
+                  Keanggotaan
                 </Text>
-                <Text fontSize="lg" fontWeight="bold">
-                  Januari 2024
-                </Text>
-                <Text fontSize="xs" opacity={0.8} mt={2}>
-                  Akun aktif • 1 bulan
-                </Text>
+              </Box>
+
+              <Box p={5}>
+                <Box
+                  p={4}
+                  bg="teal.600"
+                  borderRadius="lg"
+                  color="white"
+                >
+                  <Flex justify="space-between" align="flex-start" mb={3}>
+                    <VStack align="flex-start" gap={0.5}>
+                      <Text fontSize="xs" opacity={0.85} textTransform="uppercase" letterSpacing="wide">
+                        Member sejak
+                      </Text>
+                      <Text fontSize="lg" fontWeight="bold">
+                        Januari 2024
+                      </Text>
+                    </VStack>
+                    <Box p={2} bg="whiteAlpha.200" borderRadius="lg">
+                      <LuCreditCard size={18} />
+                    </Box>
+                  </Flex>
+                  <Flex align="center" gap={2} fontSize="xs" opacity={0.85}>
+                    <LuCalendar size={12} />
+                    <Text>Akun aktif • 1 bulan</Text>
+                  </Flex>
+                </Box>
               </Box>
             </Box>
 
@@ -300,6 +323,10 @@ export default function ProfilePage() {
               size="lg"
               borderRadius="xl"
               w="full"
+              borderColor="red.200"
+              color="red.600"
+              _hover={{ bg: "red.50", borderColor: "red.300" }}
+              _dark={{ borderColor: "red.800", color: "red.400", _hover: { bg: "red.900/30" } }}
             >
               <LuLogOut size={18} />
               Keluar dari Akun

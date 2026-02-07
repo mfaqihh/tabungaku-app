@@ -12,6 +12,7 @@ import {
   IconButton,
   Input,
   Progress,
+  Flex,
 } from "@chakra-ui/react";
 import { Header } from "@/components/layout";
 import {
@@ -23,7 +24,14 @@ import {
   LuTrash2,
   LuEye,
   LuSearch,
+  LuArrowUpRight,
+  LuShield,
+  LuCoins,
+  LuPlane,
+  LuSmartphone,
+  LuChartLine,
 } from "react-icons/lu";
+import { ReactNode } from "react";
 
 interface SavingsAccount {
   id: string;
@@ -31,7 +39,7 @@ interface SavingsAccount {
   balance: number;
   target: number;
   type: "regular" | "goal";
-  icon: string;
+  icon: ReactNode;
   lastUpdate: string;
 }
 
@@ -42,7 +50,7 @@ const savingsAccounts: SavingsAccount[] = [
     balance: 18500000,
     target: 30000000,
     type: "goal",
-    icon: "🛡️",
+    icon: <LuShield size={18} />,
     lastUpdate: "2024-02-07",
   },
   {
@@ -51,7 +59,7 @@ const savingsAccounts: SavingsAccount[] = [
     balance: 5200000,
     target: 0,
     type: "regular",
-    icon: "💰",
+    icon: <LuCoins size={18} />,
     lastUpdate: "2024-02-06",
   },
   {
@@ -60,7 +68,7 @@ const savingsAccounts: SavingsAccount[] = [
     balance: 4200000,
     target: 10000000,
     type: "goal",
-    icon: "✈️",
+    icon: <LuPlane size={18} />,
     lastUpdate: "2024-02-05",
   },
   {
@@ -69,7 +77,7 @@ const savingsAccounts: SavingsAccount[] = [
     balance: 3750000,
     target: 5000000,
     type: "goal",
-    icon: "📱",
+    icon: <LuSmartphone size={18} />,
     lastUpdate: "2024-02-04",
   },
   {
@@ -78,7 +86,7 @@ const savingsAccounts: SavingsAccount[] = [
     balance: 8500000,
     target: 0,
     type: "regular",
-    icon: "📈",
+    icon: <LuChartLine size={18} />,
     lastUpdate: "2024-02-03",
   },
 ];
@@ -106,246 +114,116 @@ export default function TabunganPage() {
   const regularAccounts = savingsAccounts.filter((a) => a.type === "regular");
 
   return (
-    <Box>
+    <Box minH="100vh">
       <Header title="Tabungan" />
 
-      <Box p={{ base: 4, md: 6 }}>
-        {/* Summary Cards */}
+      <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-          {/* Total Balance Card */}
-          <Box
-            bg="linear-gradient(135deg, #319795 0%, #2C7A7B 100%)"
-            borderRadius="2xl"
-            p={6}
-            color="white"
-          >
-            <HStack justify="space-between" mb={4}>
-              <Text fontSize="sm" opacity={0.9}>
+          <Box bg="teal.600" borderRadius="xl" p={5} color="white">
+            <Flex justify="space-between" align="flex-start" mb={3}>
+              <Text fontSize="xs" fontWeight="medium" opacity={0.9} textTransform="uppercase" letterSpacing="wide">
                 Total Tabungan
               </Text>
               <Box p={2} bg="whiteAlpha.200" borderRadius="lg">
-                <LuPiggyBank size={20} />
+                <LuPiggyBank size={18} />
               </Box>
-            </HStack>
-            <Text fontSize="2xl" fontWeight="bold">
+            </Flex>
+            <Text fontSize="2xl" fontWeight="bold" mb={1}>
               {formatCurrency(totalBalance)}
             </Text>
-            <Text fontSize="xs" opacity={0.8} mt={1}>
-              {savingsAccounts.length} akun tabungan
-            </Text>
+            <HStack gap={1} fontSize="xs" opacity={0.85}>
+              <LuArrowUpRight size={14} />
+              <Text>{savingsAccounts.length} akun tabungan</Text>
+            </HStack>
           </Box>
 
-          {/* Goal Savings */}
-          <Box
-            bg="white"
-            borderRadius="2xl"
-            p={6}
-            boxShadow="sm"
-            border="1px solid"
-            borderColor="gray.100"
-            _dark={{ bg: "gray.800", borderColor: "gray.700" }}
-          >
-            <HStack justify="space-between" mb={4}>
-              <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }}>
+          <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
+            <Flex justify="space-between" align="flex-start" mb={3}>
+              <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
                 Tabungan Berjangka
               </Text>
-              <Box
-                p={2}
-                bg="purple.50"
-                color="purple.500"
-                borderRadius="lg"
-                _dark={{ bg: "purple.900", color: "purple.200" }}
-              >
-                <LuTarget size={20} />
+              <Box p={2} bg="purple.50" color="purple.600" borderRadius="lg" _dark={{ bg: "purple.900", color: "purple.300" }}>
+                <LuTarget size={18} />
               </Box>
-            </HStack>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800" _dark={{ color: "white" }}>
-              {goalAccounts.length}
-            </Text>
-            <Text fontSize="xs" color="gray.500" mt={1}>
-              Target aktif
-            </Text>
+            </Flex>
+            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>{goalAccounts.length}</Text>
+            <Text fontSize="xs" color="gray.500" mt={1}>Target aktif</Text>
           </Box>
 
-          {/* Regular Savings */}
-          <Box
-            bg="white"
-            borderRadius="2xl"
-            p={6}
-            boxShadow="sm"
-            border="1px solid"
-            borderColor="gray.100"
-            _dark={{ bg: "gray.800", borderColor: "gray.700" }}
-          >
-            <HStack justify="space-between" mb={4}>
-              <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }}>
+          <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
+            <Flex justify="space-between" align="flex-start" mb={3}>
+              <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
                 Tabungan Reguler
               </Text>
-              <Box
-                p={2}
-                bg="blue.50"
-                color="blue.500"
-                borderRadius="lg"
-                _dark={{ bg: "blue.900", color: "blue.200" }}
-              >
-                <LuTrendingUp size={20} />
+              <Box p={2} bg="blue.50" color="blue.600" borderRadius="lg" _dark={{ bg: "blue.900", color: "blue.300" }}>
+                <LuTrendingUp size={18} />
               </Box>
-            </HStack>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800" _dark={{ color: "white" }}>
-              {regularAccounts.length}
-            </Text>
-            <Text fontSize="xs" color="gray.500" mt={1}>
-              Akun tabungan
-            </Text>
+            </Flex>
+            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>{regularAccounts.length}</Text>
+            <Text fontSize="xs" color="gray.500" mt={1}>Akun tabungan</Text>
           </Box>
         </SimpleGrid>
 
-        {/* Actions Bar */}
-        <HStack justify="space-between" mb={4} flexWrap="wrap" gap={4}>
-          <HStack gap={2}>
-            <Box position="relative" maxW="300px">
-              <Box
-                position="absolute"
-                left={3}
-                top="50%"
-                transform="translateY(-50%)"
-                color="gray.400"
-              >
-                <LuSearch size={18} />
-              </Box>
-              <Input
-                placeholder="Cari tabungan..."
-                pl={10}
-                bg="white"
-                borderRadius="lg"
-                _dark={{ bg: "gray.800" }}
-              />
+        <Flex justify="space-between" align="center" mb={4} gap={4} flexWrap="wrap">
+          <Box position="relative" w={{ base: "full", sm: "280px" }}>
+            <Box position="absolute" left={3} top="50%" transform="translateY(-50%)" color="gray.400" pointerEvents="none">
+              <LuSearch size={16} />
             </Box>
-          </HStack>
-          <Button
-            colorPalette="teal"
-            size="sm"
-            borderRadius="lg"
-          >
+            <Input placeholder="Cari tabungan..." pl={9} size="sm" bg="white" borderRadius="lg" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }} />
+          </Box>
+          <Button colorPalette="teal" size="sm" borderRadius="lg">
             <LuPlus size={16} />
             Tambah Tabungan
           </Button>
-        </HStack>
+        </Flex>
 
-        {/* Savings Table */}
-        <Box
-          bg="white"
-          borderRadius="2xl"
-          boxShadow="sm"
-          border="1px solid"
-          borderColor="gray.100"
-          overflow="hidden"
-          _dark={{ bg: "gray.800", borderColor: "gray.700" }}
-        >
+        <Box bg="white" borderRadius="xl" border="1px solid" borderColor="gray.200" overflow="hidden" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
           <Table.Root size="md">
             <Table.Header>
-              <Table.Row bg="gray.50" _dark={{ bg: "gray.700" }}>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }}>
-                  Nama Tabungan
-                </Table.ColumnHeader>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }}>
-                  Tipe
-                </Table.ColumnHeader>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }}>
-                  Saldo
-                </Table.ColumnHeader>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }}>
-                  Progress
-                </Table.ColumnHeader>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }}>
-                  Update Terakhir
-                </Table.ColumnHeader>
-                <Table.ColumnHeader fontWeight="semibold" color="gray.600" _dark={{ color: "gray.300" }} textAlign="center">
-                  Aksi
-                </Table.ColumnHeader>
+              <Table.Row bg="gray.50" _dark={{ bg: "gray.800" }}>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Nama Tabungan</Table.ColumnHeader>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Tipe</Table.ColumnHeader>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Saldo</Table.ColumnHeader>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Progress</Table.ColumnHeader>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>Update Terakhir</Table.ColumnHeader>
+                <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" textAlign="right" _dark={{ color: "gray.400" }}>Aksi</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {savingsAccounts.map((account) => {
-                const progress = account.target > 0
-                  ? Math.round((account.balance / account.target) * 100)
-                  : null;
-
+              {savingsAccounts.map((account, index) => {
+                const progress = account.target > 0 ? Math.round((account.balance / account.target) * 100) : null;
                 return (
-                  <Table.Row
-                    key={account.id}
-                    _hover={{ bg: "gray.50" }}
-                    _dark={{ _hover: { bg: "gray.700" } }}
-                  >
-                    <Table.Cell>
+                  <Table.Row key={account.id} borderBottom={index < savingsAccounts.length - 1 ? "1px solid" : "none"} borderColor="gray.100" _hover={{ bg: "gray.50" }} _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700" } }}>
+                    <Table.Cell py={4} px={5}>
                       <HStack gap={3}>
-                        <Text fontSize="xl">{account.icon}</Text>
-                        <Text fontWeight="medium" color="gray.800" _dark={{ color: "white" }}>
-                          {account.name}
-                        </Text>
+                        <Box p={2} bg="teal.50" color="teal.600" borderRadius="lg" _dark={{ bg: "teal.900", color: "teal.300" }}>{account.icon}</Box>
+                        <Text fontWeight="medium" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{account.name}</Text>
                       </HStack>
                     </Table.Cell>
-                    <Table.Cell>
-                      <Badge
-                        colorPalette={account.type === "goal" ? "purple" : "blue"}
-                        variant="subtle"
-                        size="sm"
-                      >
-                        {account.type === "goal" ? "Berjangka" : "Reguler"}
-                      </Badge>
+                    <Table.Cell py={4} px={5}>
+                      <Badge colorPalette={account.type === "goal" ? "purple" : "blue"} variant="subtle" size="sm" borderRadius="md">{account.type === "goal" ? "Berjangka" : "Reguler"}</Badge>
                     </Table.Cell>
-                    <Table.Cell>
-                      <Text fontWeight="semibold" color="gray.800" _dark={{ color: "white" }}>
-                        {formatCurrency(account.balance)}
-                      </Text>
+                    <Table.Cell py={4} px={5}>
+                      <Text fontWeight="semibold" fontSize="sm" color="gray.900" _dark={{ color: "white" }}>{formatCurrency(account.balance)}</Text>
                     </Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell py={4} px={5}>
                       {progress !== null ? (
-                        <VStack align="stretch" gap={1} maxW="150px">
-                          <Progress.Root value={progress} size="sm" colorPalette="teal">
-                            <Progress.Track>
-                              <Progress.Range />
+                        <VStack align="stretch" gap={1} maxW="140px">
+                          <Progress.Root value={progress} size="xs" colorPalette="teal">
+                            <Progress.Track bg="gray.100" borderRadius="full" _dark={{ bg: "gray.700" }}>
+                              <Progress.Range borderRadius="full" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="gray.500">
-                            {progress}% dari {formatCurrency(account.target)}
-                          </Text>
+                          <Text fontSize="xs" color="gray.500">{progress}% dari {formatCurrency(account.target)}</Text>
                         </VStack>
-                      ) : (
-                        <Text fontSize="sm" color="gray.400">-</Text>
-                      )}
+                      ) : <Text fontSize="xs" color="gray.400">—</Text>}
                     </Table.Cell>
-                    <Table.Cell>
-                      <Text fontSize="sm" color="gray.500">
-                        {formatDate(account.lastUpdate)}
-                      </Text>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <HStack justify="center" gap={1}>
-                        <IconButton
-                          aria-label="View"
-                          variant="ghost"
-                          size="sm"
-                          colorPalette="gray"
-                        >
-                          <LuEye size={16} />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Edit"
-                          variant="ghost"
-                          size="sm"
-                          colorPalette="blue"
-                        >
-                          <LuPencil size={16} />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          variant="ghost"
-                          size="sm"
-                          colorPalette="red"
-                        >
-                          <LuTrash2 size={16} />
-                        </IconButton>
+                    <Table.Cell py={4} px={5}><Text fontSize="sm" color="gray.500">{formatDate(account.lastUpdate)}</Text></Table.Cell>
+                    <Table.Cell py={4} px={5}>
+                      <HStack justify="flex-end" gap={0.5}>
+                        <IconButton aria-label="View" variant="ghost" size="sm" color="gray.500" _hover={{ color: "gray.700", bg: "gray.100" }} _dark={{ _hover: { color: "white", bg: "gray.700" } }}><LuEye size={16} /></IconButton>
+                        <IconButton aria-label="Edit" variant="ghost" size="sm" color="gray.500" _hover={{ color: "blue.600", bg: "blue.50" }} _dark={{ _hover: { color: "blue.400", bg: "blue.900" } }}><LuPencil size={16} /></IconButton>
+                        <IconButton aria-label="Delete" variant="ghost" size="sm" color="gray.500" _hover={{ color: "red.600", bg: "red.50" }} _dark={{ _hover: { color: "red.400", bg: "red.900" } }}><LuTrash2 size={16} /></IconButton>
                       </HStack>
                     </Table.Cell>
                   </Table.Row>

@@ -1,17 +1,11 @@
 "use client";
 
-import { VStack, Text, Link as ChakraLink, HStack, Separator, Box } from "@chakra-ui/react";
+import { VStack, Text, Link as ChakraLink, HStack, Separator, Box, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LuMail, LuLock, LuLogIn, LuEye, LuEyeOff } from "react-icons/lu";
-import {
-  AuthCard,
-  AuthHeader,
-  FormInput,
-  SubmitButton,
-  AuthLink,
-} from "@/components/auth";
+import { LuMail, LuLock, LuEye, LuEyeOff, LuPiggyBank } from "react-icons/lu";
+import { AuthCard, FormInput, SubmitButton, AuthLink } from "@/components/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,24 +17,27 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    // For development: redirect to dashboard
     router.push("/dashboard");
   };
 
   return (
     <AuthCard>
-      <AuthHeader
-        icon={<LuLogIn size={28} />}
-        title="Selamat Datang"
-        subtitle="Masuk ke akun Tabunganku Anda"
-      />
+      {/* Header */}
+      <VStack gap={2} textAlign="center">
+        <Box display={{ base: "flex", lg: "none" }} p={3} bg="teal.50" borderRadius="xl" color="teal.600" mb={2} _dark={{ bg: "teal.900", color: "teal.300" }}>
+          <LuPiggyBank size={32} />
+        </Box>
+        <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+          Selamat Datang Kembali
+        </Text>
+        <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }}>
+          Masuk ke akun Tabunganku Anda
+        </Text>
+      </VStack>
 
       <form onSubmit={handleSubmit}>
-        <VStack gap={5}>
+        <VStack gap={4}>
           <FormInput
             label="Email"
             type="email"
@@ -60,27 +57,14 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               leftIcon={<LuLock size={18} />}
               rightElement={
-                <Box
-                  as="button"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  color="gray.400"
-                  _hover={{ color: "gray.600" }}
-                  cursor="pointer"
-                >
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ color: "var(--chakra-colors-gray-400)", cursor: "pointer", background: "none", border: "none" }}>
                   {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
-                </Box>
+                </button>
               }
               required
             />
             <HStack justify="flex-end">
-              <ChakraLink
-                asChild
-                fontSize="sm"
-                color="teal.600"
-                _hover={{ color: "teal.500", textDecoration: "underline" }}
-                _dark={{ color: "teal.400" }}
-              >
+              <ChakraLink asChild fontSize="sm" color="teal.600" fontWeight="medium" _hover={{ color: "teal.500", textDecoration: "underline" }} _dark={{ color: "teal.400" }}>
                 <Link href="/forgot-password">Lupa password?</Link>
               </ChakraLink>
             </HStack>
@@ -95,17 +79,11 @@ export default function LoginPage() {
       <VStack gap={4}>
         <HStack w="full" gap={4}>
           <Separator flex={1} />
-          <Text fontSize="xs" color="gray.500" flexShrink={0}>
-            atau
-          </Text>
+          <Text fontSize="xs" color="gray.400" flexShrink={0}>atau</Text>
           <Separator flex={1} />
         </HStack>
 
-        <AuthLink
-          text="Belum punya akun?"
-          linkText="Daftar sekarang"
-          href="/register"
-        />
+        <AuthLink text="Belum punya akun?" linkText="Daftar sekarang" href="/register" />
       </VStack>
     </AuthCard>
   );

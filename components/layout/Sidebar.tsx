@@ -20,7 +20,6 @@ import {
   LuChevronLeft,
   LuChevronRight,
   LuX,
-  LuLogOut,
 } from "react-icons/lu";
 import { useSidebar } from "@/contexts";
 
@@ -35,7 +34,6 @@ const navItems: NavItem[] = [
   { label: "Tabungan", href: "/tabungan", icon: LuPiggyBank },
   { label: "Budget", href: "/budget", icon: LuWallet },
   { label: "Transaksi", href: "/transaksi", icon: LuArrowLeftRight },
-  // { label: "Profile", href: "/profile", icon: LuUser },
 ];
 
 export function Sidebar() {
@@ -231,44 +229,6 @@ export function Sidebar() {
                 Ciutkan Menu
               </Text>
             )}
-          </Flex>
-        </Box>
-
-        {/* Logout */}
-        <Box
-          p={3}
-          borderTop="1px solid"
-          borderColor="gray.200"
-          _dark={{ borderColor: "gray.700" }}
-        >
-          <Flex
-            as={Link}
-            href="/login"
-            align="center"
-            gap={3}
-            px={isCollapsed ? 0 : 4}
-            py={3}
-            borderRadius="xl"
-            justify={isCollapsed ? "center" : "flex-start"}
-            color="red.500"
-            transition="all 0.2s ease"
-            _hover={{
-              bg: "red.50",
-            }}
-            _dark={{
-              _hover: {
-                bg: "red.900",
-              },
-            }}
-          >
-            {/* <Icon boxSize={5}>
-              <LuLogOut />
-            </Icon>
-            {!isCollapsed && (
-              <Text fontSize="sm" fontWeight="medium">
-                Keluar
-              </Text>
-            )} */}
           </Flex>
         </Box>
       </Box>
