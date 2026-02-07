@@ -227,7 +227,6 @@ export default function TransaksiPage() {
           borderRadius="xl"
           border="1px solid"
           borderColor="gray.200"
-          overflow="hidden"
           _dark={{ bg: "gray.800", borderColor: "gray.700" }}
         >
           <Tabs.Root defaultValue="all" variant="line">
@@ -340,17 +339,23 @@ export default function TransaksiPage() {
             </Flex>
 
             <Tabs.Content value="all" p={0}>
-              <TransactionTable transactions={transactions} />
+              <Box overflowX="auto" css={{ WebkitOverflowScrolling: "touch" }}>
+                <TransactionTable transactions={transactions} />
+              </Box>
             </Tabs.Content>
             <Tabs.Content value="income" p={0}>
-              <TransactionTable
-                transactions={transactions.filter((t) => t.type === "income")}
-              />
+              <Box overflowX="auto" css={{ WebkitOverflowScrolling: "touch" }}>
+                <TransactionTable
+                  transactions={transactions.filter((t) => t.type === "income")}
+                />
+              </Box>
             </Tabs.Content>
             <Tabs.Content value="expense" p={0}>
-              <TransactionTable
-                transactions={transactions.filter((t) => t.type === "expense")}
-              />
+              <Box overflowX="auto" css={{ WebkitOverflowScrolling: "touch" }}>
+                <TransactionTable
+                  transactions={transactions.filter((t) => t.type === "expense")}
+                />
+              </Box>
             </Tabs.Content>
           </Tabs.Root>
         </Box>
@@ -361,7 +366,7 @@ export default function TransaksiPage() {
 
 function TransactionTable({ transactions }: { transactions: Transaction[] }) {
   return (
-    <Table.Root size="md">
+    <Table.Root size="md" style={{ minWidth: "700px" }}>
       <Table.Header>
         <Table.Row bg="gray.50" _dark={{ bg: "gray.800" }}>
           <Table.ColumnHeader py={3.5} px={5} fontWeight="medium" fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
