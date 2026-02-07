@@ -80,7 +80,12 @@ export default function RegisterPage() {
             onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: "" }); }}
             leftIcon={<LuLock size={18} />}
             rightElement={
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ color: "var(--chakra-colors-gray-400)", cursor: "pointer", background: "none", border: "none" }}>
+              <Box
+                onClick={() => setShowPassword(!showPassword)}
+                color="gray.400"
+                _hover={{ color: "gray.600" }}
+                cursor="pointer"
+              >
                 {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
               </button>
             }
@@ -96,7 +101,12 @@ export default function RegisterPage() {
             onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" }); }}
             leftIcon={<LuLock size={18} />}
             rightElement={
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ color: "var(--chakra-colors-gray-400)", cursor: "pointer", background: "none", border: "none" }}>
+              <Box
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                color="gray.400"
+                _hover={{ color: "gray.600" }}
+                cursor="pointer"
+              >
                 {showConfirmPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
               </button>
             }

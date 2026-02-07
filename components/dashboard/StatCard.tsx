@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Text, VStack, HStack, Flex } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 interface StatCardProps {
@@ -95,3 +95,4 @@ export function StatCard({
     </Box>
   );
 }
+

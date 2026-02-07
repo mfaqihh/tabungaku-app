@@ -57,7 +57,12 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               leftIcon={<LuLock size={18} />}
               rightElement={
-                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ color: "var(--chakra-colors-gray-400)", cursor: "pointer", background: "none", border: "none" }}>
+                <Box
+                  onClick={() => setShowPassword(!showPassword)}
+                  color="gray.400"
+                  _hover={{ color: "gray.600" }}
+                  cursor="pointer"
+                >
                   {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
                 </button>
               }
