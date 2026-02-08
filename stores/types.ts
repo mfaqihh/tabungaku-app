@@ -65,3 +65,97 @@ export interface FundTransactionInput {
   type: 'deposit' | 'withdraw';
   note?: string;
 }
+
+// ============================================
+// BUDGET TYPES
+// ============================================
+
+/**
+ * Status budget berdasarkan persentase penggunaan
+ * - safe: < 75% terpakai
+ * - warning: 75-90% terpakai
+ * - danger: 90-100% terpakai
+ * - exceeded: > 100% terpakai
+ */
+export type BudgetStatus = 'safe' | 'warning' | 'danger' | 'exceeded';
+
+/**
+ * Tipe kategori budget
+ * - bulanan: recurring setiap bulan
+ * - berjangka: one-time atau tidak rutin
+ */
+export type BudgetCategoryType = 'bulanan' | 'berjangka';
+
+/**
+ * Interface untuk periode budget (per bulan)
+ * Menyimpan data budget untuk satu bulan tertentu
+ */
+export interface BudgetPeriod {
+  id: string;
+  userId: string;
+  month: number; // 1-12
+  year: number;
+  totalBudget: number; // Total anggaran yang ditetapkan
+  totalAllocated: number; // Total yang sudah dialokasikan ke kategori
+  totalSpent: number;
+  createdAt: string;
+  updatedAt: string;
+  // Calculated fields
+  remainingToAllocate?: number; // Sisa yang bisa dialokasikan
+  remainingBudget?: number; // Sisa budget (allocated - spent)
+  progressPercentage?: number;
+  status?: BudgetStatus;
+}
+
+/**
+ * Interface untuk kategori budget
+ * Setiap kategori punya alokasi dan tracking pengeluaran sendiri
+ */
+export interface BudgetCategory {
+  id: string;
+  budgetPeriodId: string;
+  name: string;
+  iconValue: string; // Lucide icon identifier (e.g., 'utensils')
+  color: string; // hex color
+  allocatedAmount: number;
+  spentAmount: number;
+  categoryType: BudgetCategoryType;
+  createdAt: string;
+  updatedAt: string;
+  // Calculated fields
+  remainingAmount?: number;
+  progressPercentage?: number;
+  status?: BudgetStatus;
+}
+
+/**
+ * Input untuk membuat budget period baru
+ */
+export interface CreateBudgetPeriodInput {
+  month: number;
+  year: number;
+  totalBudget: number;
+}
+
+/**
+ * Input untuk membuat kategori budget baru
+ */
+export interface CreateBudgetCategoryInput {
+  budgetPeriodId: string;
+  name: string;
+  iconValue: string;
+  color: string;
+  allocatedAmount: number;
+  categoryType: BudgetCategoryType;
+}
+
+/**
+ * Input untuk update kategori budget
+ */
+export interface UpdateBudgetCategoryInput {
+  name?: string;
+  iconValue?: string;
+  color?: string;
+  allocatedAmount?: number;
+  categoryType?: BudgetCategoryType;
+}
