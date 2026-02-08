@@ -5,13 +5,24 @@
 
 'use client';
 
-import { Box, Text, VStack, Input, Button, Flex, RadioGroup, HStack } from '@chakra-ui/react';
+import { Box, Text, VStack, Input, Button, Flex, RadioGroup, HStack, Badge } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 import { CurrencyInput } from '@/components/ui/CurrencyInput';
 import { ColorPicker } from '@/components/ui/ColorPicker';
 import { IconPickerLucide } from '@/components/ui/IconPickerLucide';
 import { useBudgetCategoryForm } from '@/hooks/useBudgetForm';
 import { formatCurrency } from '@/lib/utils/currency';
+
+// Quick suggestions untuk nama kategori
+const QUICK_SUGGESTIONS = [
+  'Makanan & Minuman',
+  'Transportasi',
+  'Belanja Kebutuhan',
+  'Hiburan',
+  'Listrik',
+  'Internet',
+  'Kesehatan',
+];
 
 interface CategoryFormProps {
   onSuccess?: () => void;
@@ -76,6 +87,29 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
               {errors.name.message}
             </Text>
           )}
+          
+          {/* Quick suggestions */}
+          <HStack mt={2} gap={2} flexWrap="wrap">
+            <Text fontSize="xs" color="gray.500" _dark={{ color: 'gray.400' }}>
+              Saran:
+            </Text>
+            {QUICK_SUGGESTIONS.map((suggestion) => (
+              <Badge
+                key={suggestion}
+                size="sm"
+                variant="outline"
+                colorPalette="gray"
+                cursor="pointer"
+                onClick={() => form.setValue('name', suggestion, { shouldValidate: true })}
+                _hover={{ bg: 'gray.100', _dark: { bg: 'gray.700' } }}
+                borderRadius="md"
+                px={2}
+                py={0.5}
+              >
+                {suggestion}
+              </Badge>
+            ))}
+          </HStack>
         </Box>
         
         {/* Category Type */}

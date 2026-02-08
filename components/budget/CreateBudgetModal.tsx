@@ -6,10 +6,12 @@
 'use client';
 
 import { Box, Text, Flex, IconButton, VStack, Input, Button, HStack } from '@chakra-ui/react';
-import { X, Calendar, Wallet } from 'lucide-react';
+import { X, Calendar, Wallet, Lightbulb } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { CurrencyInput } from '@/components/ui/CurrencyInput';
 import { useBudgetPeriodForm } from '@/hooks/useBudgetForm';
+import { useBudgetStore } from '@/stores/budgetStore';
+import { formatCurrency } from '@/lib/utils/currency';
 
 interface CreateBudgetModalProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
   const { form, watchedValues, errors, isSubmitting, isValid, onSubmit } = useBudgetPeriodForm({
     onSuccess: onClose,
   });
+  const { budgetPeriods } = useBudgetStore();
   
   const { control, setValue } = form;
   
@@ -33,6 +36,13 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
   
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
+  
+  // Get previous month's budget
+  const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+  const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+  const previousBudget = budgetPeriods.find(
+    (p) => p.month === prevMonth && p.year === prevYear
+  );
   
   return (
     <>
@@ -157,6 +167,34 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
                   Total anggaran yang ingin kamu kelola bulan ini
                 </Text>
               </Box>
+              
+              {/* Previous Budget Suggestion */}
+              {previousBudget && (
+                <Box
+                  bg="yellow.50"
+                  p={4}
+                  borderRadius="lg"
+                  cursor="pointer"
+                  onClick={() => setValue('totalBudget', previousBudget.totalBudget, { shouldValidate: true })}
+                  _hover={{ bg: 'yellow.100' }}
+                  _dark={{ bg: 'yellow.900', _hover: { bg: 'yellow.800' } }}
+                  transition="all 0.2s"
+                >
+                  <Flex gap={3} align="center">
+                    <Box color="yellow.600" _dark={{ color: 'yellow.300' }}>
+                      <Lightbulb size={20} />
+                    </Box>
+                    <Box flex={1}>
+                      <Text fontSize="sm" color="yellow.800" _dark={{ color: 'yellow.200' }}>
+                        Bulan lalu: <strong>{formatCurrency(previousBudget.totalBudget)}</strong>
+                      </Text>
+                      <Text fontSize="xs" color="yellow.600" _dark={{ color: 'yellow.400' }}>
+                        Klik untuk menggunakan nilai yang sama
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Box>
+              )}
               
               {/* Quick Presets */}
               <Box>

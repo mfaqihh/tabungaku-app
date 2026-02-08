@@ -158,4 +158,85 @@ export interface UpdateBudgetCategoryInput {
   color?: string;
   allocatedAmount?: number;
   categoryType?: BudgetCategoryType;
+  // Fields that can be updated when spending changes
+  spentAmount?: number;
+  remainingAmount?: number;
+  progressPercentage?: number;
+  status?: BudgetStatus;
+}
+
+// ============================================
+// TRANSACTION TYPES
+// ============================================
+
+/**
+ * Tipe transaksi: income (pemasukan) atau expense (pengeluaran)
+ */
+export type TransactionType = 'income' | 'expense';
+
+/**
+ * Interface untuk satu transaksi
+ * Menyimpan record transaksi keuangan
+ */
+export interface Transaction {
+  id: string;
+  userId: string;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  categoryName: string; // For display (e.g., "Gaji Bulanan", "Makanan")
+  subcategoryName?: string; // Optional detail
+  
+  // Relations
+  budgetPeriodId?: string;
+  budgetCategoryId?: string; // For expense - links to budget category
+  savingsGoalId?: string; // For income - if saved to savings
+  
+  // Metadata
+  transactionDate: string; // ISO date (YYYY-MM-DD)
+  createdAt: string;
+  updatedAt: string;
+  
+  // UI helpers (calculated from related entities)
+  displayIcon?: string; // Lucide icon value from budget category or default
+  displayColor?: string; // Color from budget category or default
+}
+
+/**
+ * Input untuk membuat transaksi baru
+ */
+export interface CreateTransactionInput {
+  type: TransactionType;
+  amount: number;
+  description: string;
+  categoryName: string;
+  subcategoryName?: string;
+  transactionDate: string;
+  
+  // Optional relations
+  budgetCategoryId?: string;
+  savingsGoalId?: string;
+}
+
+/**
+ * Summary statistik transaksi
+ */
+export interface TransactionSummary {
+  totalIncome: number;
+  totalExpense: number;
+  netBalance: number; // income - expense
+  transactionCount: number;
+  incomeCount: number;
+  expenseCount: number;
+}
+
+/**
+ * Filter untuk query transaksi
+ */
+export interface TransactionFilters {
+  type?: TransactionType;
+  startDate?: string;
+  endDate?: string;
+  categoryId?: string;
+  searchQuery?: string;
 }

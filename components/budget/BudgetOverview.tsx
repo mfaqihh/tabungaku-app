@@ -71,11 +71,12 @@ const STATUS_COLORS: Record<BudgetStatus, string> = {
 };
 
 export function BudgetOverview() {
-  const { getCurrentPeriod, getTotalAllocated, getTotalSpent, getRemainingToAllocate } = useBudgetStore();
+  const { getCurrentPeriod, getCategoriesByPeriod, getTotalAllocated, getTotalSpent, getRemainingToAllocate } = useBudgetStore();
   const currentPeriod = getCurrentPeriod();
   
   if (!currentPeriod) return null;
   
+  const categories = getCategoriesByPeriod(currentPeriod.id);
   const totalBudget = currentPeriod.totalBudget;
   const totalAllocated = getTotalAllocated();
   const totalSpent = getTotalSpent();
@@ -106,7 +107,7 @@ export function BudgetOverview() {
           value={totalAllocated}
           icon={<PieChart size={22} />}
           colorScheme="blue"
-          subtitle={`${allocatedProgress.toFixed(0)}% dari total budget`}
+          subtitle={`${categories.length} kategori • ${allocatedProgress.toFixed(0)}%`}
         />
         <StatCard
           label="Total Terpakai"
