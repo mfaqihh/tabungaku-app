@@ -50,15 +50,17 @@ export function Header({ title }: HeaderProps) {
       >
         <Flex h="70px" align="center" justify="space-between" px={{ base: 4, md: 6 }}>
           {/* Left side */}
-          <HStack gap={4}>
+          <HStack gap={3}>
             <IconButton
               aria-label="Open menu"
               display={{ base: "flex", lg: "none" }}
               onClick={toggleMobile}
               variant="ghost"
               size="sm"
+              color="gray.600"
+              _dark={{ color: "gray.400" }}
             >
-              <LuMenu size={20} />
+              <LuMenu size={22} />
             </IconButton>
             <Text
               fontSize={{ base: "lg", md: "xl" }}
@@ -71,7 +73,7 @@ export function Header({ title }: HeaderProps) {
           </HStack>
 
           {/* Right side */}
-          <HStack gap={2}>
+          <HStack gap={1}>
             <ColorModeButton />
             
             <IconButton
@@ -79,12 +81,14 @@ export function Header({ title }: HeaderProps) {
               variant="ghost"
               size="sm"
               position="relative"
+              color="gray.600"
+              _dark={{ color: "gray.400" }}
             >
               <LuBell size={20} />
               <Box
                 position="absolute"
-                top={1}
-                right={1}
+                top={1.5}
+                right={1.5}
                 w={2}
                 h={2}
                 bg="red.500"
@@ -97,23 +101,27 @@ export function Header({ title }: HeaderProps) {
                 <HStack
                   as="button"
                   gap={2}
-                  p={2}
+                  py={1.5}
+                  px={2}
                   borderRadius="lg"
+                  transition="background 0.15s ease"
                   _hover={{ bg: "gray.100" }}
                   _dark={{ _hover: { bg: "gray.700" } }}
                 >
                   <Avatar.Root size="sm">
-                    <Avatar.Fallback name="User" bg="teal.500" color="white" />
+                    <Avatar.Fallback name="User" bg="teal.500" color="white" fontSize="xs" />
                   </Avatar.Root>
                   <Box display={{ base: "none", md: "block" }} textAlign="left">
-                    <Text fontSize="sm" fontWeight="medium" color="gray.800" _dark={{ color: "white" }}>
+                    <Text fontSize="sm" fontWeight="medium" lineHeight="1.2" color="gray.800" _dark={{ color: "white" }}>
                       John Doe
                     </Text>
-                    <Text fontSize="xs" color="gray.500">
+                    <Text fontSize="xs" color="gray.500" lineHeight="1.2">
                       john@email.com
                     </Text>
                   </Box>
-                  <LuChevronDown size={16} />
+                  <Box display={{ base: "none", md: "block" }} color="gray.400">
+                    <LuChevronDown size={14} />
+                  </Box>
                 </HStack>
               </Menu.Trigger>
               <Portal>
@@ -122,31 +130,35 @@ export function Header({ title }: HeaderProps) {
                     bg="white"
                     borderRadius="xl"
                     boxShadow="lg"
-                    py={2}
+                    border="1px solid"
+                    borderColor="gray.100"
+                    py={1.5}
                     minW="180px"
-                    _dark={{ bg: "gray.800" }}
+                    _dark={{ bg: "gray.800", borderColor: "gray.700" }}
                   >
                     <Link href="/profile">
-                      <Menu.Item value="profile" px={4} py={2.5} cursor="pointer">
+                      <Menu.Item value="profile" px={4} py={2.5} cursor="pointer" _hover={{ bg: "gray.50" }} _dark={{ _hover: { bg: "gray.700" } }}>
                         <HStack gap={3}>
-                          <LuUser size={16} />
+                          <Box color="gray.500"><LuUser size={16} /></Box>
                           <Text fontSize="sm">Profile</Text>
                         </HStack>
                       </Menu.Item>
                     </Link>
-                    <Menu.Item value="settings" px={4} py={2.5} cursor="pointer">
+                    <Menu.Item value="settings" px={4} py={2.5} cursor="pointer" _hover={{ bg: "gray.50" }} _dark={{ _hover: { bg: "gray.700" } }}>
                       <HStack gap={3}>
-                        <LuSettings size={16} />
+                        <Box color="gray.500"><LuSettings size={16} /></Box>
                         <Text fontSize="sm">Settings</Text>
                       </HStack>
                     </Menu.Item>
-                    <Menu.Separator my={1} />
+                    <Menu.Separator my={1.5} borderColor="gray.100" _dark={{ borderColor: "gray.700" }} />
                     <Menu.Item
                       value="logout"
                       px={4}
                       py={2.5}
                       cursor="pointer"
                       color="red.500"
+                      _hover={{ bg: "red.50" }}
+                      _dark={{ _hover: { bg: "red.900/30" } }}
                       onClick={() => setShowLogoutDialog(true)}
                     >
                       <HStack gap={3}>
@@ -198,7 +210,7 @@ export function Header({ title }: HeaderProps) {
                 bg="red.50"
                 borderRadius="full"
                 color="red.500"
-                _dark={{ bg: "red.900", color: "red.300" }}
+                _dark={{ bg: "red.900/50", color: "red.300" }}
               >
                 <LuTriangleAlert size={28} />
               </Box>
