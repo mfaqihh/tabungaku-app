@@ -30,7 +30,7 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDateShort, getMinDate, formatTimeRemaining } from '@/lib/utils/formatDate';
 
 interface SavingsFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (name?: string) => void;
   onCancel?: () => void;
 }
 

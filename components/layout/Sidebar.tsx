@@ -89,41 +89,45 @@ export function Sidebar() {
           _dark={{ borderColor: "gray.700" }}
         >
           {!isCollapsed && (
-            <HStack gap={2}>
+            <Link href="/dashboard" onClick={closeMobile}>
+              <HStack gap={2.5}>
+                <Box
+                  w={9}
+                  h={9}
+                  bg="teal.500"
+                  borderRadius="lg"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <LuPiggyBank color="white" size={18} />
+                </Box>
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="gray.800"
+                  _dark={{ color: "white" }}
+                >
+                  Tabunganku
+                </Text>
+              </HStack>
+            </Link>
+          )}
+
+          {isCollapsed && (
+            <Link href="/dashboard" onClick={closeMobile}>
               <Box
-                w={8}
-                h={8}
+                w={10}
+                h={10}
                 bg="teal.500"
                 borderRadius="lg"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
               >
-                <LuPiggyBank color="white" size={18} />
+                <LuPiggyBank color="white" size={20} />
               </Box>
-              <Text
-                fontSize="xl"
-                fontWeight="bold"
-                color="gray.800"
-                _dark={{ color: "white" }}
-              >
-                Tabunganku
-              </Text>
-            </HStack>
-          )}
-
-          {isCollapsed && (
-            <Box
-              w={10}
-              h={10}
-              bg="teal.500"
-              borderRadius="lg"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <LuPiggyBank color="white" size={20} />
-            </Box>
+            </Link>
           )}
 
           {/* Mobile Close Button */}
@@ -149,14 +153,16 @@ export function Sidebar() {
           overflowY="auto"
         >
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || 
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            
             return (
               <Link key={item.href} href={item.href} onClick={closeMobile}>
                 <Flex
                   align="center"
                   gap={3}
                   px={isCollapsed ? 0 : 4}
-                  py={3}
+                  py={2.5}
                   borderRadius="xl"
                   justify={isCollapsed ? "center" : "flex-start"}
                   bg={isActive ? "teal.50" : "transparent"}
@@ -190,10 +196,10 @@ export function Sidebar() {
 
         {/* Collapse Toggle (Desktop only) */}
         <Box
-          display={{ base: "none", lg: "block" }}
           p={3}
           borderTop="1px solid"
           borderColor="gray.200"
+          display={{ base: "none", lg: "block" }}
           _dark={{ borderColor: "gray.700" }}
         >
           <Flex
@@ -203,14 +209,15 @@ export function Sidebar() {
             gap={3}
             w="full"
             px={isCollapsed ? 0 : 4}
-            py={3}
+            py={2.5}
             borderRadius="xl"
             justify={isCollapsed ? "center" : "flex-start"}
-            color="gray.600"
+            color="gray.500"
+            fontSize="sm"
             transition="all 0.2s ease"
             _hover={{
               bg: "gray.100",
-              color: "gray.800",
+              color: "gray.700",
             }}
             _dark={{
               color: "gray.400",
@@ -224,8 +231,8 @@ export function Sidebar() {
               {isCollapsed ? <LuChevronRight /> : <LuChevronLeft />}
             </Icon>
             {!isCollapsed && (
-              <Text fontSize="sm" fontWeight="medium">
-                Ciutkan Menu
+              <Text fontWeight="medium">
+                Ciutkan
               </Text>
             )}
           </Flex>

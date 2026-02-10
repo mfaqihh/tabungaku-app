@@ -14,6 +14,7 @@ import {
   Input,
   Progress,
   Flex,
+  Skeleton,
 } from "@chakra-ui/react";
 import { Header } from "@/components/layout";
 import { AddSavingsModal, SavingsCard } from "@/components/tabungan";
@@ -32,10 +33,72 @@ import {
   LuArrowUpRight,
   LuLayoutGrid,
   LuList,
+  LuPackageOpen,
 } from "react-icons/lu";
+import { toaster } from "@/components/ui/toaster";
+import { TOAST_MESSAGES } from "@/constants/toastMessages";
 
 // View mode: table atau card
 type ViewMode = "table" | "card";
+
+// Skeleton loader for cards
+function SavingsCardSkeleton() {
+  return (
+    <Box
+      bg="white"
+      borderRadius="xl"
+      border="1px solid"
+      borderColor="gray.200"
+      overflow="hidden"
+      _dark={{ bg: "gray.800", borderColor: "gray.700" }}
+    >
+      <Skeleton h={1} />
+      <Box p={5}>
+        <Flex justify="space-between" mb={4}>
+          <HStack gap={3}>
+            <Skeleton h={10} w={10} borderRadius="lg" />
+            <VStack align="start" gap={1}>
+              <Skeleton h={4} w="120px" borderRadius="md" />
+              <Skeleton h={3} w="80px" borderRadius="md" />
+            </VStack>
+          </HStack>
+        </Flex>
+        <VStack align="stretch" gap={2} mb={4}>
+          <Flex justify="space-between">
+            <Skeleton h={6} w="140px" borderRadius="md" />
+            <Skeleton h={4} w="100px" borderRadius="md" />
+          </Flex>
+          <Skeleton h={2} w="full" borderRadius="full" />
+          <Flex justify="space-between">
+            <Skeleton h={3} w="80px" borderRadius="md" />
+            <Skeleton h={3} w="100px" borderRadius="md" />
+          </Flex>
+        </VStack>
+      </Box>
+    </Box>
+  );
+}
+
+// Skeleton for summary cards
+function SummaryCardSkeleton() {
+  return (
+    <Box
+      bg="white"
+      borderRadius="xl"
+      p={5}
+      border="1px solid"
+      borderColor="gray.200"
+      _dark={{ bg: "gray.800", borderColor: "gray.700" }}
+    >
+      <Flex justify="space-between" align="flex-start" mb={3}>
+        <Skeleton h={3} w="100px" borderRadius="md" />
+        <Skeleton h={9} w={9} borderRadius="lg" />
+      </Flex>
+      <Skeleton h={7} w="150px" borderRadius="md" mb={1} />
+      <Skeleton h={3} w="80px" borderRadius="md" />
+    </Box>
+  );
+}
 
 export default function TabunganPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,10 +125,17 @@ export default function TabunganPage() {
   const berjangkaCount = savingsGoals.filter((s) => s.type === "berjangka").length;
   const regulerCount = savingsGoals.filter((s) => s.type === "reguler").length;
   
-  // Handle delete
+  // Handle delete with toast
   const handleDelete = (id: string) => {
+    const savings = savingsGoals.find((s) => s.id === id);
     if (confirm("Yakin ingin menghapus tabungan ini?")) {
       deleteSavings(id);
+      toaster.create({
+        title: TOAST_MESSAGES.savings.deleted.title,
+        description: TOAST_MESSAGES.savings.deleted.description(savings?.name || 'Tabungan'),
+        type: 'success',
+        duration: 3000,
+      });
     }
   };
   
@@ -75,55 +145,70 @@ export default function TabunganPage() {
 
       <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
         {/* Summary Cards */}
-        <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-          <Box bg="teal.600" borderRadius="xl" p={5} color="white">
-            <Flex justify="space-between" align="flex-start" mb={3}>
-              <Text fontSize="xs" fontWeight="medium" opacity={0.9} textTransform="uppercase" letterSpacing="wide">
-                Total Tabungan
+        {!isHydrated ? (
+          <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
+            <Box bg="teal.600" borderRadius="xl" p={5}>
+              <Flex justify="space-between" align="flex-start" mb={3}>
+                <Skeleton h={3} w="100px" borderRadius="md" />
+                <Skeleton h={9} w={9} borderRadius="lg" />
+              </Flex>
+              <Skeleton h={7} w="150px" borderRadius="md" mb={1} />
+              <Skeleton h={3} w="80px" borderRadius="md" />
+            </Box>
+            <SummaryCardSkeleton />
+            <SummaryCardSkeleton />
+          </SimpleGrid>
+        ) : (
+          <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
+            <Box bg="teal.600" borderRadius="xl" p={5} color="white">
+              <Flex justify="space-between" align="flex-start" mb={3}>
+                <Text fontSize="xs" fontWeight="medium" opacity={0.9} textTransform="uppercase" letterSpacing="wide">
+                  Total Tabungan
+                </Text>
+                <Box p={2} bg="whiteAlpha.200" borderRadius="lg">
+                  <LuPiggyBank size={18} />
+                </Box>
+              </Flex>
+              <Text fontSize="2xl" fontWeight="bold" mb={1}>
+                {formatCurrency(totalBalance)}
               </Text>
-              <Box p={2} bg="whiteAlpha.200" borderRadius="lg">
-                <LuPiggyBank size={18} />
-              </Box>
-            </Flex>
-            <Text fontSize="2xl" fontWeight="bold" mb={1}>
-              {isHydrated ? formatCurrency(totalBalance) : "Rp 0"}
-            </Text>
-            <HStack gap={1} fontSize="xs" opacity={0.85}>
-              <LuArrowUpRight size={14} />
-              <Text>{isHydrated ? savingsGoals.length : 0} akun tabungan</Text>
-            </HStack>
-          </Box>
+              <HStack gap={1} fontSize="xs" opacity={0.85}>
+                <LuArrowUpRight size={14} />
+                <Text>{savingsGoals.length} akun tabungan</Text>
+              </HStack>
+            </Box>
 
-          <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
-            <Flex justify="space-between" align="flex-start" mb={3}>
-              <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
-                Tabungan Berjangka
+            <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
+              <Flex justify="space-between" align="flex-start" mb={3}>
+                <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
+                  Tabungan Berjangka
+                </Text>
+                <Box p={2} bg="purple.50" color="purple.600" borderRadius="lg" _dark={{ bg: "purple.900", color: "purple.300" }}>
+                  <LuTarget size={18} />
+                </Box>
+              </Flex>
+              <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+                {berjangkaCount}
               </Text>
-              <Box p={2} bg="purple.50" color="purple.600" borderRadius="lg" _dark={{ bg: "purple.900", color: "purple.300" }}>
-                <LuTarget size={18} />
-              </Box>
-            </Flex>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
-              {isHydrated ? berjangkaCount : 0}
-            </Text>
-            <Text fontSize="xs" color="gray.500" mt={1}>Target aktif</Text>
-          </Box>
+              <Text fontSize="xs" color="gray.500" mt={1}>Target aktif</Text>
+            </Box>
 
-          <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
-            <Flex justify="space-between" align="flex-start" mb={3}>
-              <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
-                Tabungan Reguler
+            <Box bg="white" borderRadius="xl" p={5} border="1px solid" borderColor="gray.200" _dark={{ bg: "gray.800", borderColor: "gray.700" }}>
+              <Flex justify="space-between" align="flex-start" mb={3}>
+                <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" _dark={{ color: "gray.400" }}>
+                  Tabungan Reguler
+                </Text>
+                <Box p={2} bg="blue.50" color="blue.600" borderRadius="lg" _dark={{ bg: "blue.900", color: "blue.300" }}>
+                  <LuTrendingUp size={18} />
+                </Box>
+              </Flex>
+              <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+                {regulerCount}
               </Text>
-              <Box p={2} bg="blue.50" color="blue.600" borderRadius="lg" _dark={{ bg: "blue.900", color: "blue.300" }}>
-                <LuTrendingUp size={18} />
-              </Box>
-            </Flex>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
-              {isHydrated ? regulerCount : 0}
-            </Text>
-            <Text fontSize="xs" color="gray.500" mt={1}>Akun tabungan</Text>
-          </Box>
-        </SimpleGrid>
+              <Text fontSize="xs" color="gray.500" mt={1}>Akun tabungan</Text>
+            </Box>
+          </SimpleGrid>
+        )}
 
         {/* Toolbar */}
         <Flex justify="space-between" align="center" mb={4} gap={4} flexWrap="wrap">
@@ -141,7 +226,8 @@ export default function TabunganPage() {
                 borderColor="gray.200" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                _dark={{ bg: "gray.800", borderColor: "gray.700" }} 
+                _dark={{ bg: "gray.800", borderColor: "gray.700" }}
+                _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
               />
             </Box>
             
@@ -170,7 +256,14 @@ export default function TabunganPage() {
             </HStack>
           </HStack>
           
-          <Button colorPalette="teal" size="sm" borderRadius="lg" onClick={() => setIsModalOpen(true)}>
+          <Button
+            colorPalette="teal"
+            size="sm"
+            borderRadius="lg"
+            onClick={() => setIsModalOpen(true)}
+            _hover={{ transform: "translateY(-1px)", boxShadow: "md" }}
+            transition="all 0.2s"
+          >
             <LuPlus size={16} />
             Tambah Tabungan
           </Button>
@@ -178,28 +271,55 @@ export default function TabunganPage() {
 
         {/* Content */}
         {!isHydrated ? (
-          <Box textAlign="center" py={10}>
-            <Text color="gray.500">Memuat data...</Text>
-          </Box>
+          /* Skeleton Loading State */
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
+            {[...Array(6)].map((_, i) => (
+              <SavingsCardSkeleton key={i} />
+            ))}
+          </SimpleGrid>
         ) : filteredSavings.length === 0 ? (
+          /* Empty State */
           <Box 
             textAlign="center" 
             py={16} 
             bg="white" 
-            borderRadius="xl" 
-            border="1px solid" 
+            borderRadius="2xl" 
+            border="1px dashed" 
             borderColor="gray.200"
             _dark={{ bg: "gray.800", borderColor: "gray.700" }}
           >
-            <Box fontSize="4xl" mb={4}>💰</Box>
-            <Text fontSize="lg" fontWeight="medium" color="gray.700" mb={2} _dark={{ color: "gray.300" }}>
+            <Box
+              w={16}
+              h={16}
+              mx="auto"
+              mb={4}
+              borderRadius="full"
+              bg="teal.50"
+              _dark={{ bg: "teal.900" }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {searchQuery ? (
+                <LuSearch size={32} color="var(--chakra-colors-teal-500)" />
+              ) : (
+                <LuPackageOpen size={32} color="var(--chakra-colors-teal-500)" />
+              )}
+            </Box>
+            <Text fontSize="lg" fontWeight="semibold" color="gray.700" mb={2} _dark={{ color: "gray.300" }}>
               {searchQuery ? "Tidak ada tabungan ditemukan" : "Belum ada tabungan"}
             </Text>
-            <Text fontSize="sm" color="gray.500" mb={6}>
-              {searchQuery ? "Coba kata kunci lain" : "Mulai buat target tabunganmu sekarang!"}
+            <Text fontSize="sm" color="gray.500" mb={6} maxW="350px" mx="auto">
+              {searchQuery ? `Tidak ada hasil untuk "${searchQuery}". Coba kata kunci lain.` : "Mulai buat target tabunganmu sekarang dan kelola keuanganmu dengan lebih baik!"}
             </Text>
             {!searchQuery && (
-              <Button colorPalette="teal" onClick={() => setIsModalOpen(true)}>
+              <Button
+                colorPalette="teal"
+                onClick={() => setIsModalOpen(true)}
+                borderRadius="lg"
+                _hover={{ transform: "translateY(-1px)", boxShadow: "md" }}
+                transition="all 0.2s"
+              >
                 <LuPlus size={16} />
                 Buat Tabungan Pertama
               </Button>
@@ -235,7 +355,14 @@ export default function TabunganPage() {
                   {filteredSavings.map((savings, index) => {
                     const progress = Math.round((savings.currentAmount / savings.targetAmount) * 100);
                     return (
-                      <Table.Row key={savings.id} borderBottom={index < filteredSavings.length - 1 ? "1px solid" : "none"} borderColor="gray.100" _hover={{ bg: "gray.50" }} _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700" } }}>
+                      <Table.Row
+                        key={savings.id}
+                        borderBottom={index < filteredSavings.length - 1 ? "1px solid" : "none"}
+                        borderColor="gray.100"
+                        _hover={{ bg: "gray.50" }}
+                        _dark={{ borderColor: "gray.700", _hover: { bg: "gray.700" } }}
+                        transition="background 0.15s ease"
+                      >
                         <Table.Cell py={4} px={5}>
                           <HStack gap={3}>
                             <Box p={2} bg={`${savings.color}20`} borderRadius="lg" fontSize="lg">{savings.icon}</Box>

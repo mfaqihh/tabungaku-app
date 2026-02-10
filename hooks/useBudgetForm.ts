@@ -19,6 +19,7 @@ import {
 import { useBudgetStore } from '@/stores/budgetStore';
 import { formatCurrency } from '@/lib/utils/currency';
 import { toaster } from '@/components/ui/toaster';
+import { TOAST_MESSAGES } from '@/constants/toastMessages';
 
 interface UseBudgetFormOptions {
   onSuccess?: () => void;
@@ -48,8 +49,8 @@ export function useBudgetPeriodForm({ onSuccess }: UseBudgetFormOptions = {}) {
       const monthName = new Date(data.year, data.month - 1).toLocaleDateString('id-ID', { month: 'long' });
       
       toaster.create({
-        title: 'Budget Berhasil Dibuat',
-        description: `Budget ${monthName} ${data.year} dengan total ${formatCurrency(data.totalBudget)} telah dibuat`,
+        title: TOAST_MESSAGES.budget.periodCreated.title,
+        description: TOAST_MESSAGES.budget.periodCreated.description(`${monthName} ${data.year}`),
         type: 'success',
         duration: 4000,
       });
@@ -59,8 +60,8 @@ export function useBudgetPeriodForm({ onSuccess }: UseBudgetFormOptions = {}) {
     } catch (error) {
       console.error('Error creating budget period:', error);
       toaster.create({
-        title: 'Gagal Membuat Budget',
-        description: 'Terjadi kesalahan, silakan coba lagi',
+        title: TOAST_MESSAGES.errors.saveFailed.title,
+        description: TOAST_MESSAGES.errors.saveFailed.description,
         type: 'error',
         duration: 4000,
       });
@@ -107,8 +108,8 @@ export function useBudgetCategoryForm({ onSuccess }: UseBudgetFormOptions = {}) 
     // Validate against remaining budget
     if (data.allocatedAmount > remainingBudget) {
       toaster.create({
-        title: 'Alokasi Melebihi Budget',
-        description: `Sisa yang bisa dialokasikan: ${formatCurrency(remainingBudget)}`,
+        title: TOAST_MESSAGES.budget.allocationExceeded.title,
+        description: TOAST_MESSAGES.budget.allocationExceeded.description(formatCurrency(remainingBudget)),
         type: 'error',
         duration: 4000,
       });
@@ -122,8 +123,8 @@ export function useBudgetCategoryForm({ onSuccess }: UseBudgetFormOptions = {}) 
       });
       
       toaster.create({
-        title: 'Kategori Ditambahkan',
-        description: `Kategori "${data.name}" dengan alokasi ${formatCurrency(data.allocatedAmount)} berhasil ditambahkan`,
+        title: TOAST_MESSAGES.budget.categoryCreated.title,
+        description: TOAST_MESSAGES.budget.categoryCreated.description(data.name, formatCurrency(data.allocatedAmount)),
         type: 'success',
         duration: 4000,
       });
@@ -138,8 +139,8 @@ export function useBudgetCategoryForm({ onSuccess }: UseBudgetFormOptions = {}) 
     } catch (error) {
       console.error('Error adding category:', error);
       toaster.create({
-        title: 'Gagal Menambah Kategori',
-        description: 'Terjadi kesalahan, silakan coba lagi',
+        title: TOAST_MESSAGES.errors.saveFailed.title,
+        description: TOAST_MESSAGES.errors.saveFailed.description,
         type: 'error',
         duration: 4000,
       });

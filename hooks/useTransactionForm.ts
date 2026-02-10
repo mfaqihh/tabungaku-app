@@ -22,6 +22,7 @@ import {
 } from '@/lib/validations/transactionSchema';
 import { formatCurrency } from '@/lib/utils/currency';
 import { toaster } from '@/components/ui/toaster';
+import { TOAST_MESSAGES } from '@/constants/toastMessages';
 
 interface UseTransactionFormOptions {
   onSuccess?: () => void;
@@ -159,11 +160,14 @@ export function useTransactionForm(options: UseTransactionFormOptions = {}) {
           savingsGoalId: data.savingsGoalId,
         });
 
-        const typeText = data.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+        const isIncome = data.type === 'income';
+        const msg = isIncome 
+          ? TOAST_MESSAGES.transactions.incomeCreated
+          : TOAST_MESSAGES.transactions.expenseCreated;
 
         toaster.create({
-          title: 'Transaksi Berhasil!',
-          description: `${typeText} ${formatCurrency(data.amount)} telah dicatat`,
+          title: msg.title,
+          description: msg.description(formatCurrency(data.amount)),
           type: 'success',
           duration: 3000,
         });
@@ -179,8 +183,8 @@ export function useTransactionForm(options: UseTransactionFormOptions = {}) {
       } catch (error) {
         console.error('Error creating transaction:', error);
         toaster.create({
-          title: 'Gagal',
-          description: 'Terjadi kesalahan saat mencatat transaksi',
+          title: TOAST_MESSAGES.errors.saveFailed.title,
+          description: TOAST_MESSAGES.errors.saveFailed.description,
           type: 'error',
           duration: 3000,
         });

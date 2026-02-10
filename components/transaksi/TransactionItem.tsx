@@ -12,6 +12,8 @@ import { getIconByValue } from '@/constants/budgetIcons';
 import type { Transaction } from '@/stores/types';
 import { formatCurrency } from '@/lib/utils/currency';
 import { useTransactionStore } from '@/stores/transactionStore';
+import { toaster } from '@/components/ui/toaster';
+import { TOAST_MESSAGES } from '@/constants/toastMessages';
 
 interface TransactionItemProps {
   transaction: Transaction;
@@ -39,6 +41,12 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
   const handleDelete = () => {
     if (confirm('Hapus transaksi ini?')) {
       deleteTransaction(transaction.id);
+      toaster.create({
+        title: TOAST_MESSAGES.transactions.deleted.title,
+        description: TOAST_MESSAGES.transactions.deleted.description,
+        type: 'success',
+        duration: 3000,
+      });
     }
     setMenuOpen(false);
   };
@@ -57,10 +65,12 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
         borderColor: 'gray.700',
         borderLeftColor: isIncome ? 'green.500' : 'red.500',
       }}
-      transition="all 0.2s"
+      transition="all 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
       _hover={{
         boxShadow: 'md',
         transform: 'translateY(-1px)',
+        borderColor: 'gray.300',
+        _dark: { borderColor: 'gray.600' },
       }}
     >
       <Flex justify="space-between" align="center">

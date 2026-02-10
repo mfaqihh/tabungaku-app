@@ -30,15 +30,16 @@ export function SavingsCard({ savings, onView, onEdit, onDelete }: SavingsCardPr
       border="1px solid"
       borderColor="gray.200"
       overflow="hidden"
-      transition="all 0.2s"
+      transition="all 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
       _hover={{
         borderColor: 'gray.300',
-        shadow: 'md',
+        shadow: 'lg',
+        transform: 'translateY(-2px)',
       }}
       _dark={{
         bg: 'gray.800',
         borderColor: 'gray.700',
-        _hover: { borderColor: 'gray.600' },
+        _hover: { borderColor: 'gray.600', shadow: 'lg', transform: 'translateY(-2px)' },
       }}
     >
       {/* Color bar on top */}
