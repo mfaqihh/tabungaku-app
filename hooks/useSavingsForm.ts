@@ -11,9 +11,11 @@ import { useCallback } from 'react';
 import { savingsSchema, defaultSavingsFormValues, type SavingsFormData } from '@/lib/validations/savingsSchema';
 import { useSavingsStore } from '@/stores/savingsStore';
 import { getDefaultTargetDate } from '@/lib/utils/formatDate';
+import { toaster } from '@/components/ui/toaster';
+import { TOAST_MESSAGES } from '@/constants/toastMessages';
 
 interface UseSavingsFormOptions {
-  onSuccess?: () => void;
+  onSuccess?: (name?: string) => void;
 }
 
 export function useSavingsForm({ onSuccess }: UseSavingsFormOptions = {}) {
@@ -85,12 +87,18 @@ export function useSavingsForm({ onSuccess }: UseSavingsFormOptions = {}) {
       // Reset form
       reset(defaultSavingsFormValues);
       
-      // Callback success
-      onSuccess?.();
+      // Callback success with name
+      onSuccess?.(data.name);
       
       return true;
     } catch (error) {
       console.error('Error saving:', error);
+      toaster.create({
+        title: TOAST_MESSAGES.errors.saveFailed.title,
+        description: TOAST_MESSAGES.errors.saveFailed.description,
+        type: 'error',
+        duration: 4000,
+      });
       return false;
     }
   }, [addSavings, reset, onSuccess]);

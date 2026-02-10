@@ -4,6 +4,7 @@
  * - Overview budget bulanan
  * - List kategori dengan progress
  * - Modal buat budget & tambah kategori
+ * - Skeleton loading & empty states
  */
 
 'use client';
@@ -16,7 +17,8 @@ import {
   VStack,
   SimpleGrid,
   Flex,
-  Spinner,
+  Skeleton,
+  HStack,
 } from '@chakra-ui/react';
 import { Plus, Wallet } from 'lucide-react';
 import { Header } from '@/components/layout';
@@ -33,6 +35,91 @@ const MONTHS = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
+
+// Skeleton for overview stat cards
+function OverviewSkeleton() {
+  return (
+    <Box>
+      <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap={4} mb={6}>
+        {[...Array(4)].map((_, i) => (
+          <Box
+            key={i}
+            bg="white"
+            borderRadius="xl"
+            p={5}
+            border="1px solid"
+            borderColor="gray.200"
+            _dark={{ bg: 'gray.800', borderColor: 'gray.700' }}
+          >
+            <Flex justify="space-between" align="flex-start" mb={3}>
+              <VStack align="flex-start" gap={1}>
+                <Skeleton h={4} w="80px" borderRadius="md" />
+                <Skeleton h={7} w="140px" borderRadius="md" />
+                <Skeleton h={3} w="100px" borderRadius="md" />
+              </VStack>
+              <Skeleton h={10} w={10} borderRadius="lg" />
+            </Flex>
+          </Box>
+        ))}
+      </SimpleGrid>
+      <Box
+        bg="white"
+        borderRadius="xl"
+        p={5}
+        border="1px solid"
+        borderColor="gray.200"
+        _dark={{ bg: 'gray.800', borderColor: 'gray.700' }}
+      >
+        <Flex justify="space-between" mb={3}>
+          <Skeleton h={5} w="120px" borderRadius="md" />
+          <Skeleton h={4} w="200px" borderRadius="md" />
+        </Flex>
+        <Skeleton h={3} w="full" borderRadius="full" />
+      </Box>
+    </Box>
+  );
+}
+
+// Skeleton for category cards
+function CategoryCardSkeleton() {
+  return (
+    <Box
+      bg="white"
+      borderRadius="xl"
+      border="1px solid"
+      borderColor="gray.200"
+      overflow="hidden"
+      _dark={{ bg: 'gray.800', borderColor: 'gray.700' }}
+    >
+      <Skeleton h={1} />
+      <Box p={5}>
+        <Flex justify="space-between" mb={4}>
+          <HStack gap={3}>
+            <Skeleton h={10} w={10} borderRadius="lg" />
+            <VStack align="start" gap={1}>
+              <Skeleton h={4} w="120px" borderRadius="md" />
+              <HStack>
+                <Skeleton h={4} w="60px" borderRadius="md" />
+                <Skeleton h={4} w="50px" borderRadius="md" />
+              </HStack>
+            </VStack>
+          </HStack>
+        </Flex>
+        <VStack gap={2} mb={4} align="stretch">
+          <Flex justify="space-between">
+            <Skeleton h={3} w="60px" borderRadius="md" />
+            <Skeleton h={3} w="100px" borderRadius="md" />
+          </Flex>
+          <Flex justify="space-between">
+            <Skeleton h={3} w="80px" borderRadius="md" />
+            <Skeleton h={3} w="100px" borderRadius="md" />
+          </Flex>
+        </VStack>
+        <Skeleton h={2} w="full" borderRadius="full" />
+      </Box>
+    </Box>
+  );
+}
 
 export default function BudgetPage() {
   const {
@@ -60,14 +147,43 @@ export default function BudgetPage() {
     }
   }, [isHydrated, currentPeriod]);
   
-  // Loading state during hydration
+  // Loading state during hydration - skeleton
   if (!isHydrated) {
     return (
       <Box minH="100vh">
         <Header title="Budget" />
-        <Flex justify="center" align="center" minH="50vh">
-          <Spinner size="xl" color="teal.500" />
-        </Flex>
+        <Box p={{ base: 4, md: 6 }} maxW="1600px" mx="auto">
+          {/* Title skeleton */}
+          <Flex
+            direction={{ base: 'column', md: 'row' }}
+            justify="space-between"
+            align={{ base: 'flex-start', md: 'center' }}
+            mb={6}
+            gap={4}
+          >
+            <VStack align="start" gap={1}>
+              <Skeleton h={5} w="140px" borderRadius="md" />
+              <Skeleton h={4} w="240px" borderRadius="md" />
+            </VStack>
+            <Skeleton h={9} w="160px" borderRadius="lg" />
+          </Flex>
+
+          {/* Overview skeleton */}
+          <OverviewSkeleton />
+
+          {/* Categories skeleton */}
+          <Box mt={6}>
+            <Flex justify="space-between" align="center" mb={4}>
+              <Skeleton h={5} w="120px" borderRadius="md" />
+              <Skeleton h={4} w="80px" borderRadius="md" />
+            </Flex>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
+              {[...Array(3)].map((_, i) => (
+                <CategoryCardSkeleton key={i} />
+              ))}
+            </SimpleGrid>
+          </Box>
+        </Box>
       </Box>
     );
   }
@@ -109,6 +225,8 @@ export default function BudgetPage() {
               colorPalette="teal"
               size="lg"
               onClick={() => setIsCreateModalOpen(true)}
+              _hover={{ transform: "translateY(-1px)", boxShadow: "md" }}
+              transition="all 0.2s"
             >
               <Plus size={20} />
               Buat Budget
@@ -151,6 +269,8 @@ export default function BudgetPage() {
             size="sm"
             borderRadius="lg"
             onClick={() => setIsAddCategoryModalOpen(true)}
+            _hover={{ transform: "translateY(-1px)", boxShadow: "md" }}
+            transition="all 0.2s"
           >
             <Plus size={16} />
             Tambah Kategori
@@ -205,6 +325,8 @@ export default function BudgetPage() {
                   colorPalette="teal"
                   variant="outline"
                   onClick={() => setIsAddCategoryModalOpen(true)}
+                  _hover={{ transform: "translateY(-1px)", boxShadow: "md" }}
+                  transition="all 0.2s"
                 >
                   <Plus size={18} />
                   Tambah Kategori

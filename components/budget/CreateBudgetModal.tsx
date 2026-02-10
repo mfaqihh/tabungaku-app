@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useEffect, useCallback } from 'react';
 import { Box, Text, Flex, IconButton, VStack, Input, Button, HStack } from '@chakra-ui/react';
 import { X, Calendar, Wallet, Lightbulb } from 'lucide-react';
 import { Controller } from 'react-hook-form';
@@ -31,6 +32,26 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
   const { budgetPeriods } = useBudgetStore();
   
   const { control, setValue } = form;
+
+  // Keyboard escape handler
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    },
+    [onClose]
+  );
+
+  // Lock body scroll & listen for escape key
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, handleKeyDown]);
   
   if (!isOpen) return null;
   
@@ -51,8 +72,10 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
         position="fixed"
         inset={0}
         bg="blackAlpha.600"
-        zIndex={100}
+        backdropFilter="blur(4px)"
+        zIndex={1000}
         onClick={onClose}
+        className="backdrop-enter"
       />
       
       {/* Modal Container */}
@@ -61,14 +84,15 @@ export function CreateBudgetModal({ isOpen, onClose }: CreateBudgetModalProps) {
         top="50%"
         left="50%"
         transform="translate(-50%, -50%)"
-        zIndex={101}
+        zIndex={1001}
         w={{ base: '95vw', md: '480px' }}
         maxH="90vh"
         overflowY="auto"
         bg="white"
         borderRadius="2xl"
-        boxShadow="2xl"
+        boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.25)"
         _dark={{ bg: 'gray.800' }}
+        className="modal-enter"
       >
         {/* Header */}
         <Flex

@@ -189,7 +189,9 @@ export function Header({ title }: HeaderProps) {
             position="absolute"
             inset={0}
             bg="blackAlpha.600"
+            backdropFilter="blur(4px)"
             onClick={() => setShowLogoutDialog(false)}
+            className="backdrop-enter"
           />
           
           {/* Dialog */}
@@ -201,8 +203,9 @@ export function Header({ title }: HeaderProps) {
             mx={4}
             maxW="sm"
             w="full"
-            boxShadow="2xl"
+            boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.25)"
             _dark={{ bg: "gray.800" }}
+            className="modal-enter"
           >
             <VStack gap={4} align="center">
               <Box
